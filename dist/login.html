@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!--
+* CoreUI - Free Bootstrap Admin Template
+* @version v4.2.2
+* @link https://coreui.io/product/free-bootstrap-admin-template/
+* Copyright (c) 2023 creativeLabs Łukasz Holeczek
+* Licensed under MIT (https://github.com/coreui/coreui-free-bootstrap-admin-template/blob/main/LICENSE)
+-->
+
+<html lang="en">
+  <head>
+    <base href="./">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="Łukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>CoreUI Free Bootstrap Admin Template</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="assets/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="assets/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="assets/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Vendors styles-->
+    <link rel="stylesheet" href="node_modules/simplebar/dist/simplebar.css">
+    <link rel="stylesheet" href="css/vendors/simplebar.css">
+    <!-- Main styles for this application-->
+    <link href="css/style.css" rel="stylesheet">
+    <!-- We use those styles to show code examples, you should remove them in your application.-->
+    <link href="css/examples.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body>
+    <div class="sh-toast-container" id="shToastContainerTop"></div>
+    <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 " >
+            <div class="card-group d-block d-md-flex row rounded ">
+              <div class="card col-md-7 p-4 mb-0 bg-orange text-white " id="card_A">
+                <div class="card-body" >
+                  <h1>Login</h1>
+                  <p class="text-white">Sign In to your account</p>
+
+                  <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bg-light">
+                      <svg class="icon" style="color:#FF6100">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
+                      </svg>
+                    </span>
+                    <input class="form-control" type="text" id="email" placeholder="Email" required>
+                    <div class="invalid-feedback text-light">
+                      Please input a valid email.
+                    </div>
+                  </div>
+
+                  <div class="input-group mb-4 has-validation">
+                    <span class="input-group-text bg-light" >
+                      <svg class="icon" style="color:#FF6100">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-lock-locked"></use>
+                      </svg>
+                    </span>
+                    <input class="form-control" type="password" id="password" placeholder="Password" required>
+                    <div class="invalid-feedback text-light" id="password_invalid_feedback">
+                      Please input a valid password.
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-6">
+                      <button class="btn btn-primary px-4" id="loginButton" type="submit">Login</button>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+              <div class="card col-md-5 text-dark py-5" id="card_B">
+                <div class="card-body text-center">
+                  <div>
+                    <img src="assets/brand/irms_login_logo.png" class="img-thumbnail border-0" alt="...">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- CoreUI and necessary plugins-->
+    <script src="node_modules/@coreui/coreui/dist/js/coreui.bundle.min.js"></script>
+    <script src="node_modules/simplebar/dist/simplebar.min.js"></script>
+    <script type="module" src="js/firebaseConfig.js"></script>
+    <script type="module">
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged  } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { doc, getDoc, getFirestore } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+        var toastMixin = Swal.mixin({
+           toast: true,
+           icon: 'success',
+           title: 'General Title',
+           animation: false,
+           position: 'top-right',
+           showConfirmButton: false,
+           timer: 3000,
+           timerProgressBar: true,
+           didOpen: (toast) => {
+             toast.addEventListener('mouseenter', Swal.stopTimer)
+             toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+
+        const check = getAuth();
+        onAuthStateChanged(check, (user) => {
+          if (user) {
+            const uid = user.uid;
+            window.location.href = "index.html";
+          } 
+        });
+      
+        const loginButton = document.getElementById("loginButton");
+
+        function validateEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        function validatePassword(password) {
+              // Check if the password is null or empty
+              if (!password) {
+                  document.getElementById("password_invalid_feedback").textContent = "Please enter a password.";
+                  return false;
+              }
+
+              // Use a regular expression to check for whitespace characters
+              const whitespaceRegex = /^\s+$/;
+
+              // If the password consists of only whitespace characters, it's invalid
+              if (whitespaceRegex.test(password)) {
+                  document.getElementById("password_invalid_feedback").textContent = "Please enter a valid password.";
+                  return false;
+              }
+
+              // Check if the password length is less than 6 characters
+              if (password.length < 6) {
+                  document.getElementById("password_invalid_feedback").textContent = "Please use a password that has at least 6 characters.";
+                  return false;
+              }
+
+              // If none of the above conditions matched, the password is valid
+              return true;
+          }
+
+
+          async function getUserId(input_id) {
+            const db = getFirestore();
+            const subcollectionPath = "/accounts/";
+            const documentId = input_id;
+
+            // Create a reference to the specific document within the subcollection
+            const documentRef = doc(db, subcollectionPath, documentId);
+
+            try {
+              // Check if the document exists and wait for it to resolve
+              const documentSnapshot = await getDoc(documentRef);
+
+              if (documentSnapshot.exists()) {
+                // Access the "first_name" field
+                const firstName = documentSnapshot.data().first_name;
+                return firstName;
+              } else {
+                console.log("Document does not exist.");
+              }
+            } catch (error) {
+              console.error("Error fetching document:", error);
+            }
+          }
+
+        function loginValidation()
+        {
+
+          const email_input = document.getElementById("email");
+          const email_value = email_input.value;
+          const password_input = document.getElementById("password");
+          const password_value = password_input.value;
+          let login = true;
+
+          if (!validateEmail(email_value)) {
+            // Email is not valid, add the "is-invalid" class
+            email_input.classList.add("is-invalid");
+            login = false;
+          }
+
+          if (!validatePassword(password_value)) {
+            password_input.classList.add("is-invalid");
+            login = false;
+          }
+
+          if(login)
+          {
+            const auth = getAuth();
+            signInWithEmailAndPassword(auth, email_value, password_value)
+              .then((userCredential) => {
+                const user = userCredential.user;
+                const documentId = user.uid;
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode)
+                console.log(errorMessage)
+
+                toastMixin.fire({
+                animation: true,
+                title: 'User is unrecognized.',
+                icon: 'error'
+              });
+
+              });
+          }
+
+        };
+
+        // Add an onclick event handler
+        loginButton.onclick = function() {
+          loginValidation();
+        };
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" || event.keyCode === 13) {
+            loginValidation();
+          }
+        });
+
+        // Function to add or remove styles based on screen width
+        function updateCardStyles() {
+          const cardA = document.getElementById("card_A");
+          const cardB = document.getElementById("card_B");
+
+          if (window.innerWidth < 768) {
+            // Screen width is less than 770
+            cardA.style.borderTopLeftRadius = "2rem";
+            cardA.style.borderTopRightRadius = "2rem";
+            cardA.style.borderBottomLeftRadius = "0";
+            cardA.style.borderBottomRightRadius = "0";
+
+            cardB.style.borderTopLeftRadius = "0";
+            cardB.style.borderTopRightRadius = "0";
+            cardB.style.borderBottomLeftRadius = "2rem";
+            cardB.style.borderBottomRightRadius = "2rem";
+          } else {
+            // Screen width is 770 or greater
+            cardA.style.borderTopLeftRadius = "2rem";
+            cardA.style.borderTopRightRadius = "0";
+            cardA.style.borderBottomLeftRadius = "2rem";
+            cardA.style.borderBottomRightRadius = "0";
+
+            cardB.style.borderTopLeftRadius = "0";
+            cardB.style.borderTopRightRadius = "2rem";
+            cardB.style.borderBottomLeftRadius = "0";
+            cardB.style.borderBottomRightRadius = "2rem";
+          }
+        }
+
+        // Call the function initially and add an event listener to update on window resize
+        updateCardStyles();
+        window.addEventListener("resize", updateCardStyles);
+
+
+    </script>
+  </body>
+</html>

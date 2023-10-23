@@ -1,0 +1,31 @@
+.bg-orange {
+  background-color: #FF6100;
+}
+.form-control:focus {
+  color: var(--cui-input-focus-color, rgba(44, 56, 74, 0.95));
+  background-color: var(--cui-input-focus-bg, #fff);
+  border-color: var(--cui-input-focus-border-color, #0020B1);
+  outline: 0;
+  box-shadow: 0 0 0 0.15rem rgba(15,25,170,0.46);
+}
+.sidebar {
+  --cui-sidebar-bg: #FF6100;
+  --cui-sidebar-color: rgba(255, 255, 255, 0.87);
+  --cui-sidebar-brand-color: rgba(255, 255, 255, 0.87);
+  --cui-sidebar-brand-bg: #1505dc;
+  --cui-sidebar-footer-bg: rgba(0, 0, 21, 0.2);
+  --cui-sidebar-toggler-bg: #1505dc;
+  --cui-sidebar-toggler-hover-bg: #1505dc;
+  --cui-sidebar-nav-title-color: white;
+  --cui-sidebar-nav-link-color: white;
+  --cui-sidebar-nav-link-hover-bg: #5E17EB;
+  --cui-sidebar-nav-link-icon-color: white;
+  color: var(--cui-sidebar-color);
+  background: var(--cui-sidebar-bg);
+}
+.btn-close {
+  background: transparent var(--cui-btn-close-bg, url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e")) center/1em auto no-repeat;
+}
+.btn-close:focus {
+  box-shadow: 0 0 0 0.15rem rgba(15,25,170,0.46);
+}

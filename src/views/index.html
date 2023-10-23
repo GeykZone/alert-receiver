@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<!--
+* CoreUI - Free Bootstrap Admin Template
+* @version v4.2.2
+* @link https://coreui.io/product/free-bootstrap-admin-template/
+* Copyright (c) 2023 creativeLabs Łukasz Holeczek
+* Licensed under MIT (https://github.com/coreui/coreui-free-bootstrap-admin-template/blob/main/LICENSE)
+-->
+
+<!-- Breadcrumb-->
+<html lang="en">
+  <head>
+    <base href="./">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="Łukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>CoreUI Free Bootstrap Admin Template</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="assets/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="assets/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="assets/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Vendors styles-->
+    <link rel="stylesheet" href="node_modules/simplebar/dist/simplebar.css">
+    <link rel="stylesheet" href="css/vendors/simplebar.css">
+    <!-- Main styles for this application-->
+    <link href="css/newStyle.css" rel="stylesheet">
+    <!-- We use those styles to show code examples, you should remove them in your application.-->
+    <link href="css/examples.css" rel="stylesheet">
+    <link href="node_modules/@coreui/chartjs/dist/css/coreui-chartjs.css" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        #map {
+            width: 100%;
+            height: 600px;
+        }
+        /* Add this CSS to hide Mapbox and OpenStreetMap attributions */
+        .mapboxgl-ctrl-attrib,
+        .mapboxbox-improve-map {
+            display: none;
+        }
+        .custom-popup {
+          background-color: #1505dc;
+          padding: 12px;
+          border-radius: 18px;
+          box-shadow:  0px 0px 5px rgba(0, 0, 0, 0.2);
+          font-size: 16px;
+          color: white;
+          
+          /* Center the content using flexbox */
+          display: flex;
+          flex-direction: column; /* Stack children vertically */
+          justify-content: center; /* Center horizontally */
+          align-items: center; /* Center vertically */
+        }
+
+        .mapboxgl-popup-content {
+          position: static;
+          padding-left: 10px;
+          padding-right: 10px;
+          padding-top: 10px;
+          padding-bottom: 8px;
+          font-family: 'Open Sans', sans-serif;
+          border-radius: 25px !important;
+          opacity: 1 !important;
+          width: auto;
+          max-height: 100%; /* Adjust height automatically */
+          overflow: hidden; /* Hide overflow content if it exceeds max-height */
+          display: inline-block; /* Display as inline-block */
+          background-color: #fd7e14;
+        }
+
+        /* Change the anchor background color */
+        .mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+        .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+        .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+            border-bottom-color: #fd7e14;
+            }
+        .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+        .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+        .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+            border-top-color: #fd7e14;
+            }
+        .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+            border-right-color: #fd7e14;
+            }
+        .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+            border-left-color: #fd7e14;
+            }
+
+        /* Target the close button in a more specific manner */
+        .mapboxgl-popup-close-button {
+          display: none !important;
+        }
+
+    </style>
+  </head>
+  <body >
+
+    <!-- Validate location modal -->
+    <div class="modal fade" id="validate_location" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header text-white" style="background-color: #fd7e14;">
+            <h5 class="modal-title" id="exampleModalLabel">Validate Location</h5>
+            <button type="button" class="btn-close" id="close_validate_location_modal"  data-coreui-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body"> 
+            <form>
+              <div class="mb-3">
+                <p>Please enter the headquarter's new location coordinates (long and lat).</p>
+              </div>
+              <div class="mb-3 has-validation">
+                <label for="recipient-name" class="col-form-label">New Location Name:</label>
+                <input type="text" class="form-control" id="new_location_name">
+                <div class="invalid-feedback">
+                  Invalid input.
+                </div>
+              </div>
+              <div class="mb-3 has-validation">
+                <label for="recipient-name" class="col-form-label">New Longitude:</label>
+                <input type="number" class="form-control" id="new_long">
+                <div class="invalid-feedback">
+                  Invalid input.
+                </div>
+              </div>
+              <div class="mb-3 has-validation">
+                <label for="recipient-name" class="col-form-label">New Latitude:</label>
+                <input type="number" class="form-control" id="new_lat">
+                <div class="invalid-feedback">
+                  Invalid input.
+                </div>
+              </div>
+              <div class="mb-3">
+                <button type="button" class="btn btn-primary" id="auto_generate">Auto Generate</button>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="submit_new_location">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Show Accident/Incident area -->
+    <div class="modal fade" id="show_accident_incident_area" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header text-white" style="background-color: #fd7e14;">
+            <h5 class="modal-title" id="accident_incident_area_title">Validate Location</h5>
+            <button type="button" class="btn-close" id="close_accident_incident_area"  data-coreui-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body"> 
+           <!--destination name should show here--> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="respond_btn">Respond</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
+      <div class="sidebar-brand d-none d-md-flex">
+        <div class="sidebar-brand-full bg-transparent" >
+          <img class="img-thumbnail bg-transparent border-0"  width="180" height="100" src="assets/brand/irms.png" alt="user@email.com">
+        </div>
+        <div class="sidebar-brand-narrow mx-1 my-1" width="46" height="46" alt="CoreUI Logo" >
+          <img class="img-thumbnail bg-transparent border-0"  width="180" height="100" src="assets/brand/irms_logo_circle.png" alt="user@email.com">
+        </div>
+      </div>
+      <ul class="sidebar-nav" data-coreui="navigation" data-simplebar>
+        <li class="nav-title">Components</li>
+
+        <li class="nav-item"><a class="nav-link" style="cursor: pointer;" id="validate_location" data-coreui-toggle="modal" data-coreui-target="#validate_location">
+            <svg class="nav-icon">
+              <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-chart-pie"></use>
+            </svg> Validate Location</a>
+        </li>
+
+        <li class="nav-item"><a class="nav-link" style="cursor: pointer;"  id="add_users">
+          <svg class="nav-icon">
+            <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user-plus"></use>
+          </svg> Add Users</a>
+       </li>
+
+       <li class="nav-item"><a class="nav-link" style="cursor: pointer;" id="user_list">
+        <svg class="nav-icon">
+          <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
+        </svg> User List</a>
+       </li>
+      </ul>
+      <button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
+    </div>
+
+    <div class="wrapper d-flex flex-column min-vh-100" style="background-color: rgb(238,240,240);">
+
+      <header class="header header-sticky mb-4">
+        <div class="container-fluid">
+          <button class="header-toggler px-md-0 me-md-3" id="header-toggler" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
+            <svg class="icon icon-lg">
+              <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-menu"></use>
+            </svg>
+          </button>
+          <ul class="header-nav mt-2">
+            <h5 id="profile_id"></h5>
+          </ul>
+          <ul class="header-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="#">
+                <svg class="icon icon-lg">
+                  <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-bell"></use>
+                </svg></a></li>
+            <li class="nav-item"><a class="nav-link" href="#">
+                <svg class="icon icon-lg">
+                  <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-list-rich"></use>
+                </svg></a></li>
+          </ul>
+          <ul class="header-nav ms-3">
+            <li class="nav-item dropdown"><a class="nav-link py-0" data-coreui-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <div class="avatar avatar-md"><img class="avatar-img" src="assets/brand/irms_logo_circle.png" alt="user@email.com"></div></a>
+              <div class="dropdown-menu dropdown-menu-end pt-0">
+                <div class="dropdown-header bg-light py-2">
+                  <div class="fw-semibold">Account</div>
+                </div><a class="dropdown-item" href="#">
+                  <svg class="icon me-2">
+                    <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-lock-locked"></use>
+                  </svg> Update Account</a>
+                  <a class="dropdown-item" href="#" id="logout">
+                  <svg class="icon me-2">
+                    <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                  </svg> Logout</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="header-divider"></div>
+        <div class="container-fluid">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb my-0 ms-2">
+              <li class="breadcrumb-item">
+                <!-- if breadcrumb is single--><span>Home</span>
+              </li>
+              <li class="breadcrumb-item active"><span>Dashboard</span></li>
+            </ol>
+          </nav>
+        </div>
+      </header>
+
+      <div class="body flex-grow-1 px-3">
+        <div class="container-lg">
+          <!-- /.row-->
+          <div class="card mb-4">
+            <div class="card-body" id="map-box">
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <footer class="footer  border-0 shadow-lg " id="footer" style="background-color: rgba(242,242,242,0.56);">
+        <div>© 2023 IRMS v1.0 | All Rights Reserved</div>
+      </footer>
+    </div>
+    <!-- CoreUI and necessary plugins-->
+    <script src="node_modules/@coreui/coreui/dist/js/coreui.bundle.min.js"></script>
+    <script src="node_modules/simplebar/dist/simplebar.min.js"></script>
+    <!-- Plugins and scripts required by this view-->
+    <script type="module" src="js/firebaseConfig.js"></script>
+    <script type="module"> 
+       import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+       import { doc, getDoc, getDocs, getFirestore, collection, query, where, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+       const logoutButton =  document.getElementById("logout");
+       const db = getFirestore();
+       const check = getAuth();
+       // Your Mapbox access token
+       const mapboxAccessToken = 'pk.eyJ1IjoiZGV2YWVzMjAyMSIsImEiOiJja3Y2ZzdsNHgwdjNjMnRva25ydWl5dXBiIn0.PGH3gPOO163DcTiQJdVRlA';
+    
+
+       var toastMixin = Swal.mixin({
+           toast: true,
+           icon: 'success',
+           title: 'General Title',
+           position: 'top-right',
+           showConfirmButton: false,
+           timer: 5000,
+           timerProgressBar: true,
+           didOpen: (toast) => {
+             toast.addEventListener('mouseenter', Swal.stopTimer)
+             toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+      
+
+       async function get_dest(e, o, profile_name)
+       {
+            // Define the query to get documents where headquarter_id is equal to pos2
+            const q = query(collection(db, 'temp_logs'), where('headquarter_id', '==', o));
+
+            // Fetch the documents that match the query
+            const querySnapshot = await getDocs(q);
+
+            // Initialize an empty array to store the destinations
+            const destinations = [];
+
+             // Loop through the documents and add them to the destinations array
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                // Use the stored randomColor instead of generating a new one
+                destinations.push({
+                    coordinates: [data.long, data.lat],
+                    color: '#EE3139',
+                });
+            });
+
+            genMap(e, destinations, mapboxAccessToken, profile_name, capitalizeFirstLetterOfWords(o));
+       }
+
+       function capitalizeFirstLetterOfWords(str) {
+        return str.replace(/\b\w/g, match => match.toUpperCase());
+      }
+
+
+      onAuthStateChanged(check, (user) => {
+        if (user) {
+          const uid = user.uid;
+          const name = getUserId(uid).then((fulfilledValue) => {
+          const  first_name  = fulfilledValue.first_name;
+          const  middle_name  = fulfilledValue.middle_name;
+          const  last_name = fulfilledValue.last_name;
+          const  age = fulfilledValue.age;
+          const  street_address = fulfilledValue.street_address;
+          const  city_municipality = fulfilledValue.city_municipality;
+          const  province = fulfilledValue.province;
+          const  profile = fulfilledValue.profile;
+          const  role = fulfilledValue.role;
+          const  head_quarter = fulfilledValue.head_quarter;
+
+          const originLongLat = getOriginLongLat(profile, head_quarter).then((resultValues) =>{
+          const origin = [resultValues.long, resultValues.lat];
+          const headquarter_info = [ resultValues.lat,  resultValues.long,  resultValues.headquarter_location_name,
+          resultValues.headquarter_name, ];
+          //console.log(headquarter_info[2])
+
+          // Get a reference to the element by its id
+          const profileElement = document.getElementById("profile_id");
+
+          // Set the text content of the element
+          profileElement.textContent = capitalizeFirstLetterOfWords(profile);
+
+          get_dest(origin, head_quarter, capitalizeFirstLetterOfWords(profile)) 
+
+          // To start listening for updates, call the function
+          const unsubscribeAlertUpdates = listenToAlertUpdates(head_quarter, origin, capitalizeFirstLetterOfWords(profile));
+
+          // Select the button by its id
+          const myButton = document.getElementById('try');
+
+          submit_new_location(profile, head_quarter)
+          
+          });
+          }).catch((error) => {
+          console.error("Error:", error);
+          });
+        } else {
+          window.location.href = "login.html";
+        }
+      });
+        
+
+      function listenToAlertUpdates(head_quarter, origin, profile_name) {
+        let alerts = [];
+
+          // Create an audio element for the alert sound
+          const alertSound = new Audio('assets/brand/beep-warning-6387.mp3'); 
+        
+        // Create a query for the "temp_logs" collection with a filter for "head_quarter" equal to "pos2"
+        const q = query(collection(db, "temp_logs"), where("headquarter_id", "==", head_quarter));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+
+              const alertText = 'An accident has occurred at ' + change.doc.data().alert_location;
+      
+              // Add the new alert to the bottom of the array
+              alerts.push(alertText);
+
+                  // Display the alerts in reverse order
+                alerts.reverse().forEach((alert, index) => {
+                  setTimeout(() => {
+                    toastMixin.fire({
+                      title: alert,
+                      icon: 'warning'
+                    });
+
+                    alertSound.autoplay = true;
+                    alertSound.load();
+                    
+                  }, index * 5000); // Adjust the delay between alerts if needed
+                });
+
+              // Reverse the array again to maintain the correct order for future alerts
+              alerts.reverse();
+              get_dest(origin, head_quarter, profile_name) 
+
+              
+            }
+            else if(change.type === "removed")
+            {
+              get_dest(origin, head_quarter, profile_name) 
+              alerts = [];
+            }
+            
+          });
+        });
+
+      }
+
+      async function getUserId(input_id){
+          const subcollectionPath = "/accounts/";
+          const documentId = input_id;
+
+          // Create a reference to the specific document within the subcollection
+          const documentRef = doc(db, subcollectionPath, documentId);
+
+          try {
+            // Check if the document exists and wait for it to resolve
+            const documentSnapshot = await getDoc(documentRef);
+
+            if (documentSnapshot.exists()) {
+              // Access the "first_name" field
+              const age = documentSnapshot.data().age;
+              const city_municipality = documentSnapshot.data().city_municipality;
+              const first_name = documentSnapshot.data().first_name;
+              const last_name = documentSnapshot.data().last_name;
+              const middle_name = documentSnapshot.data().middle_name;
+              const profile = documentSnapshot.data().profile;
+              const province = documentSnapshot.data().province;
+              const head_quarter = documentSnapshot.data().head_quarter;
+              const role = documentSnapshot.data().role;
+              const street_address = documentSnapshot.data().street_address;
+
+              return {
+
+                first_name: first_name,
+                middle_name:middle_name,
+                last_name:last_name,
+                age:age,
+                street_address:street_address,
+                city_municipality:city_municipality,
+                province:province,
+                profile:profile,
+                role:role,
+                head_quarter:head_quarter
+
+              };
+            } else {
+              console.log("Document does not exist.");
+            }
+          } catch (error) {
+            console.error("Error fetching document:", error);
+          }
+      }
+
+      async function getOriginLongLat(profile_type, head_quarter) {
+        const subcollectionPath = "/profile/"+profile_type+"/head_quarters";
+        const documentId = head_quarter;
+
+        // Create a reference to the specific document within the subcollection
+        const documentRef = doc(db, subcollectionPath, documentId);
+
+        try {
+          // Check if the document exists and wait for it to resolve
+          const documentSnapshot = await getDoc(documentRef);
+
+          if (documentSnapshot.exists()) {
+            // Access the "first_name" field
+            const lat = documentSnapshot.data().lat;
+            const long = documentSnapshot.data().long;
+            const headquarter_location_name = documentSnapshot.data().headquarter_location_name;
+            const headquarter_name = documentSnapshot.data().headquarter_name;
+
+            return {
+
+              lat:lat,
+              long:long,
+              headquarter_location_name:headquarter_location_name,
+              headquarter_name:headquarter_name,                          
+
+            };
+          } else {
+            console.log("Document does not exist.");
+          }
+        } catch (error) {
+          console.error("Error fetching document:", error);
+        }
+      }
+
+      function getLocation() {
+        if ("geolocation" in navigator) {
+           navigator.geolocation.getCurrentPosition(function (position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            const apiKey = mapboxAccessToken;
+            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${apiKey}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.features && data.features.length > 0) {
+                        const new_location_name = data.features[0].place_name;
+                        
+                        // Update the input fields with the latitude and longitude values
+                        document.getElementById("new_lat").value = latitude;
+                        document.getElementById("new_long").value = longitude;
+                        document.getElementById("new_location_name").value = new_location_name;
+                    } else {
+                        document.getElementById('result').innerHTML = 'Location not found';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+          }, function (error) {
+            // Handle errors here
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                alert("Location access denied by user.");
+                break;
+              case error.POSITION_UNAVAILABLE:
+                alert("Location information is unavailable.");
+                break;
+              case error.TIMEOUT:
+                alert("Location request timed out.");
+                break;
+              default:
+                alert("An unknown error occurred.");
+                break;
+            }
+          });
+        } else {
+          alert("Geolocation is not supported by your browser.");
+        }
+      }
+      document.getElementById("auto_generate").addEventListener("click", getLocation);
+
+      async function submit_new_location(profile, head_quarter)
+      {
+          document.getElementById("submit_new_location").onclick = async function()
+          {
+            const new_location_name = document.getElementById('new_location_name');
+            const new_loaction_name_value = new_location_name.value;
+            const new_long = document.getElementById('new_long');
+            const new_long_value = new_long.value;
+            const new_lat = document.getElementById('new_lat');
+            const new_lat_value = new_lat.value;
+            let is_valid = true;
+            const closeButton  = document.getElementById('close_validate_location_modal');
+
+            if(new_loaction_name_value.trim().length === 0)
+            {
+              new_location_name.classList.add("is-invalid");
+              is_valid = false;
+            }
+
+            if(new_long_value.trim().length === 0)
+            {
+              new_long.classList.add("is-invalid");
+              is_valid = false;
+            }
+
+            if(new_lat_value.trim().length === 0)
+            {
+              new_lat.classList.add("is-invalid");
+              is_valid = false;
+            }
+             
+
+            if(is_valid)
+            {
+              const subcollectionPath = "/profile/" + profile + "/head_quarters";
+              const documentId = head_quarter;
+              const origin = [new_long_value, new_lat_value];
+              let is_listening = false;
+              const update = doc(db, subcollectionPath, documentId);
+
+              try {
+                await updateDoc(update, {
+                  headquarter_location_name: new_loaction_name_value,
+                  lat: new_lat_value,
+                  long: new_long_value
+                });
+
+                 // The update was successful, so display a success alert.
+                toastMixin.fire({
+                  title:'Success: Headquarter location updated successfully' ,
+                  icon: 'success',
+                  timer: 3000
+                });
+
+                //refresh after update
+                setTimeout(function()
+                {
+                  location.reload();
+                },3000)
+                
+               
+
+              } catch (error) {
+                // An error occurred during the update, so display an error alert.
+                toastMixin.fire({
+                  title:error.message ,
+                  icon: 'warning',
+                  timer: 3000
+                });
+              }
+            }
+          };
+      }
+
+      logoutButton.onclick = function ()
+      {
+        signOut(check).then(() => {
+          window.location.href = "login.html";
+        }).catch((error) => {
+          console.log(error);
+        });
+      };
+
+      // Function to add or remove styles based on screen width
+      function footerStyle() {
+          const footer = document.getElementById("footer");
+
+          if (window.innerWidth < 768) {
+            // Screen width is less than 770
+
+            footer.classList.add('justify-content-center');
+
+          } else {
+            // Screen width is 770 or greater
+            footer.classList.remove('justify-content-center');
+          }
+        }
+
+        // Call the function initially and add an event listener to update on window resize
+        footerStyle();
+        window.addEventListener("resize", footerStyle);
+        
+    </script>
+     <script src="js/alert_map.js"></script>
+  </body>
+</html>
