@@ -1,4 +1,4 @@
-function genMap(origin, destinations, mapboxAccessToken, profile_name, hq) {
+export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq) {
   // Find the parent element with id "map-box"
   const mapBox = document.getElementById('map-box');
 
@@ -32,6 +32,7 @@ function genMap(origin, destinations, mapboxAccessToken, profile_name, hq) {
   function updateMap(newDestinations) {
     console.log(newDestinations);
     // Remove existing markers and routes
+
     map.remove();
 
     // Recreate the map
@@ -133,8 +134,8 @@ function genMap(origin, destinations, mapboxAccessToken, profile_name, hq) {
 
         // Store the destination information as a property of the marker
         marker_destination.properties = {
-          name: `Destination ${index + 1}`
-          // Add other properties as needed
+          name: `Destination ${index + 1}`,
+          filepath: destination.filepath
         };
 
         // Add data-coreui-toggle and data-coreui-target attributes to the marker element
@@ -145,9 +146,9 @@ function genMap(origin, destinations, mapboxAccessToken, profile_name, hq) {
         marker_destination.getElement().addEventListener('click', () => {
           // Retrieve the destination information from the marker's properties
           const destinationInfo = marker_destination.properties;
-
-          // Populate the modal content with the destination name
-          document.querySelector('#show_accident_incident_area .modal-body').textContent = destinationInfo.name;
+          console.log(destinationInfo.filepath);
+          const fileUrl = destinationInfo.filepath; // Replace with the actual file URL
+          setContent(fileUrl);
         });
       });
     });
@@ -227,6 +228,39 @@ function genMap(origin, destinations, mapboxAccessToken, profile_name, hq) {
     // Append the content to the container
     popupContainer.appendChild(popupContent);
     return popupContainer;
+  }
+
+  // Function to set the content based on file extension
+  function setContent(fileUrl) {
+    const fileExtension = getFileExtension(fileUrl);
+    const videoElement = document.getElementById('videoElement');
+    const imageElement = document.getElementById('imageElement');
+    const videoExtensions = ['mp4', 'webm', 'ogg'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    if (videoExtensions.includes(fileExtension)) {
+      // Display the video element
+      videoElement.style.display = 'block';
+      imageElement.style.display = 'none';
+      videoElement.src = fileUrl;
+      videoElement.load();
+    } else if (imageExtensions.includes(fileExtension)) {
+      // Display the image element
+      imageElement.style.display = 'block';
+      videoElement.style.display = 'none';
+      imageElement.src = fileUrl; // Set the source for the image
+      const imageLink = document.getElementById('imageLink');
+      imageLink.href = fileUrl; // Set the link to the extracted file URL
+    }
+
+    console.log(fileExtension);
+  }
+  function getFileExtension(url) {
+    const path = new URL(url).pathname;
+    const parts = path.split('.');
+    if (parts.length > 1) {
+      return parts[parts.length - 1].toLowerCase();
+    }
+    return null;
   }
 }
 //# sourceMappingURL=alert_map.js.map

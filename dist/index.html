@@ -87,6 +87,12 @@
           background-color: #fd7e14;
         }
 
+        #videoElement,
+        #imageElement {
+          max-width: 100%;
+          height: auto;
+        }
+
         /* Change the anchor background color */
         .mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
         .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
@@ -160,23 +166,38 @@
       </div>
     </div>
 
-    <!-- Show Accident/Incident area -->
-    <div class="modal fade" id="show_accident_incident_area" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header text-white" style="background-color: #fd7e14;">
-            <h5 class="modal-title" id="accident_incident_area_title">Validate Location</h5>
-            <button type="button" class="btn-close" id="close_accident_incident_area"  data-coreui-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body"> 
-           <!--destination name should show here--> 
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="respond_btn">Respond</button>
+      <!-- Show Accident/Incident area -->
+      <div class="modal fade" id="show_accident_incident_area" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header text-white" style="background-color: #fd7e14;">
+              <h6 class="modal-title" id="accident_incident_area_title">Highway Incident Location Info</h6>
+              <button type="button" class="btn-close" id="close_accident_incident_area" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-light">
+
+              <div class="px-3 mb-3 py-3 rounded rounded-4  bg-white shadow shadow">
+              <!-- Video element -->
+              <video class=" rounded rounded-4" id="videoElement" controls style="display: none;"></video>
+              <!-- Image element -->
+              <a href="" class="" target="_blank" id="imageLink"> <!-- Leave href empty initially -->
+                <img id="imageElement" src="" alt="">
+              </a>
+              </div>
+
+              <div class=" py-3 px-3 rounded rounded-4 bg-white shadow shadow">
+                <div class="rounded rounded-3 mb-3 border-1  text-center fw-bold shadow shadow-sm  text-black" id="incident_location_id">Sample Location Name</div>
+                <div class="rounded rounded-3 text-center border-1 fw-bold  shadow shadow-sm text-black" id="incident_location_id">Reported by Geykson</div>
+              </div>
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="respond_btn">Respond</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
 
 
     <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
@@ -287,7 +308,8 @@
     <script type="module"> 
        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
        import { doc, getDoc, getDocs, getFirestore, collection, query, where, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
-
+       import { genMap } from "./js/alert_map.js"
+       
        const logoutButton =  document.getElementById("logout");
        const db = getFirestore();
        const check = getAuth();
@@ -327,6 +349,7 @@
                 // Use the stored randomColor instead of generating a new one
                 destinations.push({
                     coordinates: [data.long, data.lat],
+                    filepath: data.media_url,
                     color: '#EE3139',
                 });
             });
@@ -662,11 +685,10 @@
           }
         }
 
-        // Call the function initially and add an event listener to update on window resize
-        footerStyle();
-        window.addEventListener("resize", footerStyle);
+      // Call the function initially and add an event listener to update on window resize
+      footerStyle();
+      window.addEventListener("resize", footerStyle);
         
     </script>
-     <script src="js/alert_map.js"></script>
   </body>
 </html>
