@@ -90,7 +90,7 @@
         #videoElement,
         #imageElement {
           max-width: 100%;
-          height: auto;
+          height: 450px;
         }
 
         /* Change the anchor background color */
@@ -176,18 +176,23 @@
             </div>
             <div class="modal-body bg-light">
 
-              <div class="px-3 mb-3 py-3 rounded rounded-4  bg-white shadow shadow">
+              <div class="mb-3 rounded rounded-4  px-3 py-3 bg-white shadow shadow" >
               <!-- Video element -->
-              <video class=" rounded rounded-4" id="videoElement" controls style="display: none;"></video>
+              <div class="py-3 px-3 d-none d-flex rounded rounded-4 border-0 shadow-sm justify-content-center" id="videoContainer" style="background-color: #454B53;">
+                <video controls autoplay class=" border-0 shadow rounded rounded-4" style="display: none;" id="videoElement"></video>
+              </div>
+              
               <!-- Image element -->
-              <a href="" class="" target="_blank" id="imageLink"> <!-- Leave href empty initially -->
-                <img id="imageElement" src="" alt="">
-              </a>
+              <div class="py-3 px-3 d-none d-flex rounded rounded-4 border-0 shadow-sm justify-content-center" id="imageContainer" style="background-color: #454B53;">
+                <a href=""  target="_blank" id="imageLink"> <!-- Leave href empty initially -->
+                  <img class="border-0 shadow rounded rounded-4" id="imageElement" src="" alt="">
+                </a>
+              </div>
+              
               </div>
 
-              <div class=" py-3 px-3 rounded rounded-4 bg-white shadow shadow">
-                <div class="rounded rounded-3 mb-3 border-1  text-center fw-bold shadow shadow-sm  text-black" id="incident_location_id">Sample Location Name</div>
-                <div class="rounded rounded-3 text-center border-1 fw-bold  shadow shadow-sm text-black" id="incident_location_id">Reported by Geykson</div>
+              <div class=" py-2 px-2 rounded rounded-4 bg-white shadow shadow">
+                <div class="rounded rounded-2 py-2 text-center border-1 fw-bold shadow text-black">Reported by <span  id="alerterId">Sample User</span></div>
               </div>
               
             </div>
@@ -343,7 +348,7 @@
             // Initialize an empty array to store the destinations
             const destinations = [];
 
-             // Loop through the documents and add them to the destinations array
+            // Loop through the documents and add them to the destinations array
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 // Use the stored randomColor instead of generating a new one
@@ -351,6 +356,8 @@
                     coordinates: [data.long, data.lat],
                     filepath: data.media_url,
                     color: '#EE3139',
+                    location_id: data.alert_location,
+                    alert_by:data.user_name
                 });
             });
 
@@ -362,7 +369,8 @@
       }
 
 
-      onAuthStateChanged(check, (user) => {
+      onAuthStateChanged(check, (user) => 
+      {
         if (user) {
           const uid = user.uid;
           const name = getUserId(uid).then((fulfilledValue) => {
@@ -409,11 +417,12 @@
       });
         
 
-      function listenToAlertUpdates(head_quarter, origin, profile_name) {
+      function listenToAlertUpdates(head_quarter, origin, profile_name) 
+      {
         let alerts = [];
 
-          // Create an audio element for the alert sound
-          const alertSound = new Audio('assets/brand/beep-warning-6387.mp3'); 
+        // Create an audio element for the alert sound
+        const alertSound = new Audio('assets/brand/beep-warning-6387.mp3'); 
         
         // Create a query for the "temp_logs" collection with a filter for "head_quarter" equal to "pos2"
         const q = query(collection(db, "temp_logs"), where("headquarter_id", "==", head_quarter));
@@ -454,10 +463,10 @@
             
           });
         });
-
       }
 
-      async function getUserId(input_id){
+      async function getUserId(input_id)
+      {
           const subcollectionPath = "/accounts/";
           const documentId = input_id;
 
@@ -503,7 +512,8 @@
           }
       }
 
-      async function getOriginLongLat(profile_type, head_quarter) {
+      async function getOriginLongLat(profile_type, head_quarter) 
+      {
         const subcollectionPath = "/profile/"+profile_type+"/head_quarters";
         const documentId = head_quarter;
 
@@ -537,7 +547,8 @@
         }
       }
 
-      function getLocation() {
+      function getLocation() 
+      {
         if ("geolocation" in navigator) {
            navigator.geolocation.getCurrentPosition(function (position) {
             const latitude = position.coords.latitude;
@@ -671,7 +682,8 @@
       };
 
       // Function to add or remove styles based on screen width
-      function footerStyle() {
+      function footerStyle() 
+      {
           const footer = document.getElementById("footer");
 
           if (window.innerWidth < 768) {
@@ -683,7 +695,7 @@
             // Screen width is 770 or greater
             footer.classList.remove('justify-content-center');
           }
-        }
+       }
 
       // Call the function initially and add an event listener to update on window resize
       footerStyle();

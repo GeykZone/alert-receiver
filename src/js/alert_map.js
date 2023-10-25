@@ -140,7 +140,9 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
           // Store the destination information as a property of the marker
           marker_destination.properties = {
             name: `Destination ${index + 1}`,
-            filepath: destination.filepath
+            filepath: destination.filepath,
+            location_id:destination.location_id,
+            alert_by:destination.alert_by
           };
 
           // Add data-coreui-toggle and data-coreui-target attributes to the marker element
@@ -149,14 +151,11 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
 
           // Show the custom popup on marker click
           marker_destination.getElement().addEventListener('click', () => {
-
-          // Retrieve the destination information from the marker's properties
-          const destinationInfo = marker_destination.properties;
-
-          console.log(destinationInfo.filepath);
           
-          const fileUrl = destinationInfo.filepath; // Replace with the actual file URL
-          setContent(fileUrl);
+          const fileUrl = marker_destination.properties.filepath;
+          const alertLocation = marker_destination.properties.location_id;
+          const alertBy =  marker_destination.properties.alert_by;
+          setContent(fileUrl, alertLocation, alertBy);
 
           });
 
@@ -245,10 +244,17 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
     }
 
     // Function to set the content based on file extension
-    function setContent(fileUrl) {
+    function setContent(fileUrl, alertLocation, alertBy) {
       const fileExtension = getFileExtension(fileUrl);
       const videoElement = document.getElementById('videoElement');
+      const videoContainer = document.getElementById('videoContainer');
       const imageElement = document.getElementById('imageElement');
+      const imageContainer = document.getElementById('imageContainer');
+      const incidentLocation = document.getElementById('accident_incident_area_title');
+      const personWhoAlerted = document.getElementById('alerterId');
+
+      incidentLocation.textContent = alertLocation;
+      personWhoAlerted.textContent = alertBy;
     
       const videoExtensions = ['mp4', 'webm', 'ogg'];
       const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
@@ -256,13 +262,18 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
       if (videoExtensions.includes(fileExtension)) {
         // Display the video element
         videoElement.style.display = 'block';
+        videoContainer.classList.remove('d-none');
+        imageContainer.classList.add('d-none');
         imageElement.style.display = 'none';
         videoElement.src = fileUrl;
         videoElement.load();
+       
       } else if (imageExtensions.includes(fileExtension)) {
         // Display the image element
         imageElement.style.display = 'block';
         videoElement.style.display = 'none';
+        videoContainer.classList.add('d-none');
+        imageContainer.classList.remove('d-none');
         imageElement.src = fileUrl; // Set the source for the image
         const imageLink = document.getElementById('imageLink');
         imageLink.href = fileUrl; // Set the link to the extracted file URL
