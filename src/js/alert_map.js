@@ -105,7 +105,7 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
               paint: {
                 'line-color': destination.color,
                 // Use the specified color for each route
-                'line-width': 5
+                'line-width': 3
               }
             });
           }).catch(error => {
@@ -120,9 +120,17 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
             .setLngLat(destination.coordinates)
             .addTo(map);
 
+          // Store the destination information as a property of the marker
+          marker_destination.properties = {
+            name: `Destination ${index + 1}`,
+            filepath: destination.filepath,
+            location_id:destination.location_id,
+            alert_by:destination.alert_by
+          };
+
           // Create a custom popup
           const destinationCustomPopup = new mapboxgl.Popup({ offset: 30 })
-            .setDOMContent(createCustomPopupContentForDestination(index));
+            .setDOMContent(createCustomPopupContentForDestination(index, marker_destination.properties.location_id));
 
           // Set the popup for the marker
           marker_destination.setPopup(destinationCustomPopup);
@@ -137,13 +145,6 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
             destinationCustomPopup.remove();
           });
 
-          // Store the destination information as a property of the marker
-          marker_destination.properties = {
-            name: `Destination ${index + 1}`,
-            filepath: destination.filepath,
-            location_id:destination.location_id,
-            alert_by:destination.alert_by
-          };
 
           // Add data-coreui-toggle and data-coreui-target attributes to the marker element
           marker_destination.getElement().setAttribute('data-coreui-toggle', 'modal');
@@ -155,7 +156,7 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
           const fileUrl = marker_destination.properties.filepath;
           const alertLocation = marker_destination.properties.location_id;
           const alertBy =  marker_destination.properties.alert_by;
-          setContent(fileUrl, alertLocation, alertBy);
+          setContent(fileUrl, alertLocation, alertBy, false);
 
           });
 
@@ -228,14 +229,14 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
       return popupContainer;
     }
 
-    function createCustomPopupContentForDestination(index) {
+    function createCustomPopupContentForDestination(index, destination) {
       // Create a container element for the popup
       const popupContainer = document.createElement('div');
       popupContainer.className = 'custom-popup';
     
       // Add your custom content to the popup
       const popupContent = document.createElement('div');
-      popupContent.textContent = `Destination ${index + 1}`;
+      popupContent.textContent = destination;
     
       // Append the content to the container
       popupContainer.appendChild(popupContent);
@@ -243,54 +244,64 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
       return popupContainer;
     }
 
-    // Function to set the content based on file extension
-    function setContent(fileUrl, alertLocation, alertBy) {
-      const fileExtension = getFileExtension(fileUrl);
-      const videoElement = document.getElementById('videoElement');
-      const videoContainer = document.getElementById('videoContainer');
-      const imageElement = document.getElementById('imageElement');
-      const imageContainer = document.getElementById('imageContainer');
-      const incidentLocation = document.getElementById('accident_incident_area_title');
-      const personWhoAlerted = document.getElementById('alerterId');
+  }
 
-      incidentLocation.textContent = alertLocation;
-      personWhoAlerted.textContent = alertBy;
-    
-      const videoExtensions = ['mp4', 'webm', 'ogg'];
-      const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-    
-      if (videoExtensions.includes(fileExtension)) {
-        // Display the video element
-        videoElement.style.display = 'block';
-        videoContainer.classList.remove('d-none');
-        imageContainer.classList.add('d-none');
-        imageElement.style.display = 'none';
-        videoElement.src = fileUrl;
-        videoElement.load();
-       
-      } else if (imageExtensions.includes(fileExtension)) {
-        // Display the image element
-        imageElement.style.display = 'block';
-        videoElement.style.display = 'none';
-        videoContainer.classList.add('d-none');
-        imageContainer.classList.remove('d-none');
-        imageElement.src = fileUrl; // Set the source for the image
-        const imageLink = document.getElementById('imageLink');
-        imageLink.href = fileUrl; // Set the link to the extracted file URL
-      }
+  // Function to set the content based on file extension
+  export function setContent(fileUrl, alertLocation, alertBy, isResponded) {
+    const fileExtension = getFileExtension(fileUrl);
+    const videoElement = document.getElementById('videoElement');
+    const videoContainer = document.getElementById('videoContainer');
+    const imageElement = document.getElementById('imageElement');
+    const imageContainer = document.getElementById('imageContainer');
+    const incidentLocation = document.getElementById('accident_incident_area_title');
+    const personWhoAlerted = document.getElementById('alerterId');
+    const respondButton = document.getElementById('respond_btn');
+    const markAsDoneButton = document.getElementById('mark_as_done');
 
+    if(isResponded)
+    {
+      respondButton.classList.add('d-none');
+      markAsDoneButton.classList.remove('d-none');
+    }
+    else
+    {
+      markAsDoneButton.classList.add('d-none');
+      respondButton.classList.remove('d-none'); 
     }
 
-    function getFileExtension(url) {
-      const path = new URL(url).pathname;
-      const parts = path.split('.');
-      if (parts.length > 1) {
-        return parts[parts.length - 1].toLowerCase();
-      }
-      return null;
+    incidentLocation.textContent = alertLocation;
+    personWhoAlerted.textContent = alertBy;
+  
+    const videoExtensions = ['mp4', 'webm', 'ogg'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+  
+    if (videoExtensions.includes(fileExtension)) {
+      // Display the video element
+      videoElement.style.display = 'block';
+      videoContainer.classList.remove('d-none');
+      imageContainer.classList.add('d-none');
+      imageElement.style.display = 'none';
+      videoElement.src = fileUrl;
+      videoElement.load();
+     
+    } else if (imageExtensions.includes(fileExtension)) {
+      // Display the image element
+      imageElement.style.display = 'block';
+      videoElement.style.display = 'none';
+      videoContainer.classList.add('d-none');
+      imageContainer.classList.remove('d-none');
+      imageElement.src = fileUrl; // Set the source for the image
+      const imageLink = document.getElementById('imageLink');
+      imageLink.href = fileUrl; // Set the link to the extracted file URL
     }
-
-
 
   }
-  //# sourceMappingURL=alert_map.js.map
+
+  export function getFileExtension(url) {
+    const path = new URL(url).pathname;
+    const parts = path.split('.');
+    if (parts.length > 1) {
+      return parts[parts.length - 1].toLowerCase();
+    }
+    return null;
+  }

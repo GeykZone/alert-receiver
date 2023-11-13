@@ -40,12 +40,17 @@
     <link rel="stylesheet" href="css/vendors/simplebar.css">
     <!-- Main styles for this application-->
     <link href="css/newStyle.css" rel="stylesheet">
-    <!-- We use those styles to show code examples, you should remove them in your application.-->
-    <link href="css/examples.css" rel="stylesheet">
     <link href="node_modules/@coreui/chartjs/dist/css/coreui-chartjs.css" rel="stylesheet">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!--jquery dataTable-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-1.13.7/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-1.13.7/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.js"></script>
+
     <style>
         #map {
             width: 100%;
@@ -116,6 +121,54 @@
           display: none !important;
         }
 
+        /* Customize the DataTables responsive control icon */
+        /* For the collapsed state */
+        table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control::before {
+            display: none;
+        }
+
+        /* For the expanded state */
+        table.dataTable.dtr-inline > tbody > tr > td.dtr-control:hover::before,
+        table.dataTable.dtr-inline > tbody > tr > td.dtr-control:focus::before {
+          display: none;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        ::-webkit-scrollbar {
+          width: 10px;
+          height: 5px;
+          background-color: #f5f5f5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          border-radius: 10px;
+          background-color: #959aa14d;
+        }
+
+        /* Mozilla */
+        ::-moz-scrollbar {
+          width: 10px;
+          height: 5px;
+          background-color: #f5f5f5;
+        }
+
+        ::-moz-scrollbar-thumb  {
+          border-radius: 10px;
+          background-color:  #959aa14d;
+        }
+
+        /* Microsoft */
+        ::-ms-scrollbar {
+          width: 10px;
+          height: 5px;
+          background-color: #f5f5f5;
+        }
+
+        ::-ms-scrollbar-thumb  {
+          border-radius: 10px;
+          background-color: #959aa14d;
+        }
+
     </style>
   </head>
   <body >
@@ -124,8 +177,8 @@
     <div class="modal fade" id="validate_location" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header text-white" style="background-color: #fd7e14;">
-            <h5 class="modal-title" id="exampleModalLabel">Validate Location</h5>
+          <div  class="modal-header text-white px-4 py-2" style="background-color: #fd7e14;">
+            <h6 class="modal-title" id="exampleModalLabel">Validate Location</h6>
             <button type="button" class="btn-close" id="close_validate_location_modal"  data-coreui-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body"> 
@@ -155,7 +208,7 @@
                 </div>
               </div>
               <div class="mb-3">
-                <button type="button" class="btn btn-primary" id="auto_generate">Auto Generate</button>
+                <button type="button" class="btn btn-primary" id="auto_generate" >Auto Generate</button>
               </div>
             </form>
           </div>
@@ -170,7 +223,7 @@
       <div class="modal fade" id="show_accident_incident_area" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
           <div class="modal-content">
-            <div class="modal-header text-white" style="background-color: #fd7e14;">
+            <div class="modal-header text-white px-4 py-2" style="background-color: #fd7e14;">
               <h6 class="modal-title" id="accident_incident_area_title">Highway Incident Location Info</h6>
               <button type="button" class="btn-close" id="close_accident_incident_area" data-coreui-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -178,12 +231,12 @@
 
               <div class="mb-3 rounded rounded-4  px-3 py-3 bg-white shadow shadow" >
               <!-- Video element -->
-              <div class="py-3 px-3 d-none d-flex rounded rounded-4 border-0 shadow-sm justify-content-center" id="videoContainer" style="background-color: #454B53;">
+              <div class="py-3 px-3 d-none d-flex rounded rounded-4 border-0 shadow-sm justify-content-center" id="videoContainer" style="background-color: #C7C9CB;">
                 <video controls autoplay class=" border-0 shadow rounded rounded-4" style="display: none;" id="videoElement"></video>
               </div>
               
               <!-- Image element -->
-              <div class="py-3 px-3 d-none d-flex rounded rounded-4 border-0 shadow-sm justify-content-center" id="imageContainer" style="background-color: #454B53;">
+              <div class="py-3 px-3 d-none d-flex rounded rounded-4 border-0 shadow-sm justify-content-center" id="imageContainer" style="background-color: #C7C9CB;">
                 <a href=""  target="_blank" id="imageLink"> <!-- Leave href empty initially -->
                   <img class="border-0 shadow rounded rounded-4" id="imageElement" src="" alt="">
                 </a>
@@ -191,19 +244,18 @@
               
               </div>
 
-              <div class=" py-2 px-2 rounded rounded-4 bg-white shadow shadow">
-                <div class="rounded rounded-2 py-2 text-center border-1 fw-bold shadow text-black">Reported by <span  id="alerterId">Sample User</span></div>
+              <div class=" py-2 px-2 rounded rounded-4 shadow-sm bg-white" >
+                <div class="rounded rounded-4 py-2 text-center border-1 fw-bold shadow-sm text-black bg-white" >Reported by <span  id="alerterId">Sample User</span></div>
               </div>
               
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" id="respond_btn">Respond</button>
+              <button type="button" class="btn btn-primary d-none" id="respond_btn">Respond</button>
+              <button type="button" class="btn btn-success text-white d-none" id="mark_as_done">Mark as done</button>
             </div>
           </div>
         </div>
       </div>
-
-
 
     <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
       <div class="sidebar-brand d-none d-md-flex">
@@ -234,13 +286,26 @@
           <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
         </svg> User List</a>
        </li>
+
+       <li class="nav-item"><a tabindex="10" class="nav-link" style="cursor: pointer;" id="responded_reports"
+          tabindex="0"
+          data-coreui-toggle="responded_reports_popover" 
+          data-coreui-placement="right"
+          data-coreui-custom-class="responded_reports_popover"
+          data-coreui-title="Responded Reports"
+          data-coreui-content=" ">
+        <svg class="nav-icon">
+          <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-garage"></use>
+        </svg> Responded Reports<span id="responded_count" class="position-absolute d-none translate-middle border-white ms-4 badge rounded-pill bg-success"> 
+        </span></a>
+      </li>
       </ul>
       <button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
     </div>
 
     <div class="wrapper d-flex flex-column min-vh-100" style="background-color: rgb(238,240,240);">
 
-      <header class="header header-sticky mb-4">
+      <header class="header header-sticky mb-3">
         <div class="container-fluid">
           <button class="header-toggler px-md-0 me-md-3" id="header-toggler" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
             <svg class="icon icon-lg">
@@ -251,16 +316,26 @@
             <h5 id="profile_id"></h5>
           </ul>
           <ul class="header-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="#">
-                <svg class="icon icon-lg">
+            <li class="nav-item "><a class="nav-link" href="#" >
+                <svg class="icon icon-lg" >
                   <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-bell"></use>
-                </svg></a></li>
-            <li class="nav-item"><a class="nav-link" href="#">
+                </svg>
+                <span id="new_alerts" class="position-absolute start-10 translate-middle badge rounded-pill bg-danger">
+                  2
+                </span>
+              </a>
+            </li>
+            <li class="nav-item "><a class="nav-link" href="#">
                 <svg class="icon icon-lg">
                   <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-list-rich"></use>
-                </svg></a></li>
+                </svg>
+                <span id="old_alerts" class="position-absolute start-10 translate-middle badge rounded-pill bg-danger">
+                  2
+                </span>
+              </a>
+            </li>
           </ul>
-          <ul class="header-nav ms-3">
+          <ul class="header-nav ms-3" style="margin-bottom: 5px;">
             <li class="nav-item dropdown"><a class="nav-link py-0" data-coreui-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                 <div class="avatar avatar-md"><img class="avatar-img" src="assets/brand/irms_logo_circle.png" alt="user@email.com"></div></a>
               <div class="dropdown-menu dropdown-menu-end pt-0">
@@ -291,14 +366,13 @@
         </div>
       </header>
 
-      <div class="body flex-grow-1 px-3">
+      <div class="body flex-grow-1 p-2">
         <div class="container-lg">
           <!-- /.row-->
-          <div class="card mb-4">
+          <div class="card mb-3">
             <div class="card-body" id="map-box">
             </div>
           </div>
-
         </div>
       </div>
       <footer class="footer  border-0 shadow-lg " id="footer" style="background-color: rgba(242,242,242,0.56);">
@@ -312,16 +386,15 @@
     <script type="module" src="js/firebaseConfig.js"></script>
     <script type="module"> 
        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-       import { doc, getDoc, getDocs, getFirestore, collection, query, where, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
-       import { genMap } from "./js/alert_map.js"
+       import { doc, getDoc, getDocs, deleteDoc, getFirestore, collection, query, where, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+       import { genMap, setContent, getFileExtension } from "./js/alert_map.js"
        
        const logoutButton =  document.getElementById("logout");
+       const respondButton = document.getElementById("respond_btn");
        const db = getFirestore();
        const check = getAuth();
        // Your Mapbox access token
        const mapboxAccessToken = 'pk.eyJ1IjoiZGV2YWVzMjAyMSIsImEiOiJja3Y2ZzdsNHgwdjNjMnRva25ydWl5dXBiIn0.PGH3gPOO163DcTiQJdVRlA';
-    
-
        var toastMixin = Swal.mixin({
            toast: true,
            icon: 'success',
@@ -335,40 +408,48 @@
              toast.addEventListener('mouseleave', Swal.resumeTimer)
           }
         });
+       const popoverTriggerList = document.querySelectorAll('[data-coreui-toggle="responded_reports_popover"]')
+       const popoverClass = 'responded_reports_popover'; // Adjust the class name as needed
+       const sidebarId = 'sidebar'; // Adjust the sidebar ID as needed
+       const popoverList = [...popoverTriggerList].map((popoverTriggerEl) => {
+       const popover = new coreui.Popover(popoverTriggerEl, {
+        container: 'body',
+        trigger: 'click',
+      });
+      var incidentId;
+
+        // Add a click event listener to the document to hide the popover
+        //document.addEventListener('click', (event) => 
+        //{
+          //const popoverElement = document.querySelector(`.${popoverClass}`);
+          //const isClickInsidePopover = popoverTriggerEl.contains(event.target) || (popoverElement && popoverElement.contains(event.target));
+
+           //If the click is not inside the popover or its trigger, hide it
+          // if (!isClickInsidePopover) 
+           //{
+            // popover.hide();
+           //}
+        //});
+
+        return popover;
+      });
+
+      // Add mouseenter event listener to the sidebar to update popover positions
+      document.getElementById(sidebarId).addEventListener('mouseout', () => {
+          // Loop through the popover list and update positions
+          popoverList.forEach((popover) => {
+            popover.update();
+          });
+        });
+
+      // Add mouseenter event listener to the sidebar to update popover positions
+      document.getElementById(sidebarId).addEventListener('mouseenter', () => {
+          // Loop through the popover list and update positions
+          popoverList.forEach((popover) => {
+            popover.update();
+          });
+        });
       
-
-       async function get_dest(e, o, profile_name)
-       {
-            // Define the query to get documents where headquarter_id is equal to pos2
-            const q = query(collection(db, 'temp_logs'), where('headquarter_id', '==', o));
-
-            // Fetch the documents that match the query
-            const querySnapshot = await getDocs(q);
-
-            // Initialize an empty array to store the destinations
-            const destinations = [];
-
-            // Loop through the documents and add them to the destinations array
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                // Use the stored randomColor instead of generating a new one
-                destinations.push({
-                    coordinates: [data.long, data.lat],
-                    filepath: data.media_url,
-                    color: '#EE3139',
-                    location_id: data.alert_location,
-                    alert_by:data.user_name
-                });
-            });
-
-            genMap(e, destinations, mapboxAccessToken, profile_name, capitalizeFirstLetterOfWords(o));
-       }
-
-       function capitalizeFirstLetterOfWords(str) {
-        return str.replace(/\b\w/g, match => match.toUpperCase());
-      }
-
-
       onAuthStateChanged(check, (user) => 
       {
         if (user) {
@@ -389,7 +470,8 @@
           const origin = [resultValues.long, resultValues.lat];
           const headquarter_info = [ resultValues.lat,  resultValues.long,  resultValues.headquarter_location_name,
           resultValues.headquarter_name, ];
-          //console.log(headquarter_info[2])
+          const headquarterLocationName = headquarter_info[2];
+          
 
           // Get a reference to the element by its id
           const profileElement = document.getElementById("profile_id");
@@ -397,7 +479,7 @@
           // Set the text content of the element
           profileElement.textContent = capitalizeFirstLetterOfWords(profile);
 
-          get_dest(origin, head_quarter, capitalizeFirstLetterOfWords(profile)) 
+          get_dest(origin, head_quarter, capitalizeFirstLetterOfWords(profile)) ;
 
           // To start listening for updates, call the function
           const unsubscribeAlertUpdates = listenToAlertUpdates(head_quarter, origin, capitalizeFirstLetterOfWords(profile));
@@ -405,7 +487,17 @@
           // Select the button by its id
           const myButton = document.getElementById('try');
 
-          submit_new_location(profile, head_quarter)
+          submit_new_location(profile, head_quarter);
+
+          respondToALert(head_quarter, capitalizeFirstLetterOfWords(profile), capitalizeFirstLetterOfWords(headquarterLocationName));
+
+          respondedCount(head_quarter);
+
+          renderRespondedReportsPopOver(head_quarter)
+
+          // Call the function initially and add an event listener to update on window resize
+          footerStyle();
+          window.addEventListener("resize", footerStyle);
           
           });
           }).catch((error) => {
@@ -415,8 +507,40 @@
           window.location.href = "login.html";
         }
       });
-        
 
+      async function get_dest(origin, headquarter_id, profile_name)
+       {
+            // Define the query to get documents where headquarter_id is equal to pos2
+            const q = query(collection(db, 'temp_logs'), 
+            where('headquarter_id', '==', headquarter_id),
+            where("responded", "==", false));
+
+            // Fetch the documents that match the query
+            const querySnapshot = await getDocs(q);
+
+            // Initialize an empty array to store the destinations
+            const destinations = [];
+
+            // Loop through the documents and add them to the destinations array
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                // Use the stored randomColor instead of generating a new one
+                destinations.push({
+                    coordinates: [data.long, data.lat],
+                    filepath: data.media_url,
+                    color: '#EE3139',
+                    location_id: data.alert_location,
+                    alert_by:data.user_name
+                });
+            });
+
+            genMap(origin, destinations, mapboxAccessToken, profile_name, capitalizeFirstLetterOfWords(headquarter_id));
+       }
+
+      function capitalizeFirstLetterOfWords(str) {
+        return str.replace(/\b\w/g, match => match.toUpperCase());
+      }
+      
       function listenToAlertUpdates(head_quarter, origin, profile_name) 
       {
         let alerts = [];
@@ -425,7 +549,10 @@
         const alertSound = new Audio('assets/brand/beep-warning-6387.mp3'); 
         
         // Create a query for the "temp_logs" collection with a filter for "head_quarter" equal to "pos2"
-        const q = query(collection(db, "temp_logs"), where("headquarter_id", "==", head_quarter));
+        const q = query(collection(db, "temp_logs"),
+        where("headquarter_id", "==", head_quarter),
+        where("responded", "==", false));
+
         const unsubscribe = onSnapshot(q, (snapshot) => {
           snapshot.docChanges().forEach((change) => {
             if (change.type === "added") {
@@ -452,12 +579,13 @@
               // Reverse the array again to maintain the correct order for future alerts
               alerts.reverse();
               get_dest(origin, head_quarter, profile_name) 
-
+              respondedCount(head_quarter)
               
             }
             else if(change.type === "removed")
             {
               get_dest(origin, head_quarter, profile_name) 
+              respondedCount(head_quarter)
               alerts = [];
             }
             
@@ -634,7 +762,7 @@
             {
               const subcollectionPath = "/profile/" + profile + "/head_quarters";
               const documentId = head_quarter;
-              const origin = [new_long_value, new_lat_value];
+              const origin = [parseFloat(new_long_value), parseFloat(new_lat_value)];
               let is_listening = false;
               const update = doc(db, subcollectionPath, documentId);
 
@@ -697,10 +825,381 @@
           }
        }
 
-      // Call the function initially and add an event listener to update on window resize
-      footerStyle();
-      window.addEventListener("resize", footerStyle);
+      function respondToALert(head_quarter, profile, hqLocationName)
+      {
+        respondButton.onclick = async function ()
+        {
+          var accident_incident_area_title = document.getElementById("accident_incident_area_title");
+          var accident_incident_area_title_text = accident_incident_area_title.textContent || accident_incident_area_title.innerText;
+
+          var alerterId = document.getElementById("alerterId");
+          var alerterId_text = alerterId.textContent || alerterId.innerText;
+
+          // Define your query with multiple conditions
+          const q = query(collection(db, "temp_logs"), 
+            where("headquarter_id", "==", head_quarter),
+            where("alert_location", "==", accident_incident_area_title_text),
+            where("user_name", "==", alerterId_text),
+            where("responded", "==", false)
+          );
+
+          // Execute the query and retrieve the documents
+          const querySnapshot = await getDocs(q);
+
+          // Iterate through the documents to get the "expoToken" values
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const expoToken = data.expoToken;
+
+            let message = ' is currently underway. Please wait for the responding team.\n\nThis message is from ' + capitalizeFirstLetterOfWords(head_quarter) + ' headquarters.\n\nHeadquarter Location: '+hqLocationName
+            let markAsDone = false;
+            sendPushNotification(expoToken, profile, head_quarter, accident_incident_area_title_text, alerterId_text, message, markAsDone);
+            
+          });
+
+        }
+      }
+
+      async function respondedCount(head_quarter)
+      {
+        const q = query(
+          collection(db, "temp_logs"),
+          where("headquarter_id", "==", head_quarter),
+          where("responded", "==", true)
+        );
+
+        try {
+          const querySnapshot = await getDocs(q);
+          let count = querySnapshot.size; // Get the count of documents
+
+          const respondedCountBadge = document.getElementById('responded_count');
+          const respondedCount = parseInt(count); // Replace with the actual count value
+
+          if (respondedCount <= 0) {
+            respondedCountBadge.classList.add('d-none');
+          } else {
+            respondedCountBadge.classList.remove('d-none');
+            respondedCountBadge.textContent = respondedCount;
+          }
+
+        } catch (error) {
+          console.error("Error getting documents: ", error);
+        }
+      }
+
+      async function isResponded(head_quarter, accident_incident_area_title_text, alerterId_text)
+      {
+        const q = query(
+          collection(db, "temp_logs"),
+          where("headquarter_id", "==", head_quarter),
+          where("alert_location", "==", accident_incident_area_title_text),
+          where("user_name", "==", alerterId_text),
+          where("responded", "==", false)
+        );
         
+        const logsSnapshot = await getDocs(q);
+
+        // Iterate through the documents in the query results and update the "responded" field.
+        for (const doc of logsSnapshot.docs) {
+            const docRef = doc.ref;
+            // Use the setDoc function to update the "responded" field to true.
+            await setDoc(docRef, { responded: true }, { merge: true });
+          }
+
+      }
+
+      function sendPushNotification(expoToken, profile, head_quarter, accident_incident_area_title_text, alerterId_text, message, markAsDone) 
+      {
+        const apiUrl = 'https://exp.host/--/api/v2/push/send';
+        const notificationData = {
+          to: expoToken,
+          title: profile,
+          body: profile + message
+        };
+
+        // Construct a request object
+        const request = new Request(apiUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Accept-Encoding': 'gzip, deflate',
+          }),
+          body: JSON.stringify(notificationData),
+        });
+
+        // Send the request
+        fetch(request)
+        .then(() => {
+
+          let response = 'The response message has been successfully sent';
+          // The update was successful, so display a success alert.
+          if(markAsDone)
+          {
+            response = 'The report has been marked as done'
+          }
+
+          toastMixin.fire({
+            title: 'Success: '+response,
+            icon: 'success',
+            timer: 3000
+          });
+
+          popoverList.forEach((popover) => {
+            popover.hide();
+            });
+
+          // Get the button element by its ID
+          var button = document.getElementById("close_accident_incident_area");
+          if(!markAsDone)
+          {
+            isResponded(head_quarter, accident_incident_area_title_text, alerterId_text)
+          }
+          
+            // Check if the button element exists
+            if (button) {
+              // Trigger the click event on the button
+              button.click();
+            } else {
+              console.error("Button not found");
+            }
+
+        })
+        .catch((error) => {
+          console.error('Error sending push notification request:', error);
+
+          // The update was successful, so display a success alert.
+          toastMixin.fire({
+            title: 'Error: The response message could not be sent',
+            icon: 'error',
+            timer: 3000
+          });
+        });
+      }
+
+      function renderRespondedReportsPopOver(head_quarter) 
+      {
+      
+        // Select the element with the class 'responded_reports_popover'
+        var respondedReportsPopover = document.querySelector('.responded_reports_popover');
+
+        // Create a new MutationObserver with a callback function
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                // Check if the target node (addedNodes) contains the desired element
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        // Check if the added node is defined and has the class 'responded_reports_popover'
+                        if (
+                            mutation.addedNodes[i] &&
+                            mutation.addedNodes[i].classList &&
+                            mutation.addedNodes[i].classList.contains('responded_reports_popover')
+                        ) {
+                            // Select the element with the class 'responded_reports_popover'
+                            var respondedReportsPopover = document.querySelector('.responded_reports_popover');
+                            var popoverHeader = respondedReportsPopover.querySelector('.popover-header');
+                            var popoverBody = respondedReportsPopover.querySelector('.popover-body');
+
+                            // Check if the element exists and has a child element with the class 'popover-header'
+                            if (respondedReportsPopover && popoverHeader && popoverBody) {
+
+                              respondedReportsPopover.classList.add("border-0");
+                              respondedReportsPopover.classList.add("shadow");
+                              respondedReportsPopover.classList.add("shadow-sm");
+                              
+                              // Add the 'id' attribute with the value 
+                              popoverHeader.id = 'respondPop_header';
+                              const popoverHeaderId = document.getElementById('respondPop_header');
+                              popoverBody.id = 'respondPop_body';
+                              const popoverHeaderBody = document.getElementById('respondPop_body');
+
+                              // Apply the CSS style
+                              popoverHeaderId.style.backgroundColor = '#fd7e14';
+                              popoverHeaderId.classList.add('text-white');
+                              popoverHeaderId.classList.add("border-0");
+                              popoverHeaderId.classList.add("shadow");
+                              popoverHeaderId.classList.add("shadow-sm");
+
+                              // Create a button element
+                              var bodyContent = document.createElement('div');
+                              bodyContent.id = 'respondPop_header_bodyContent';
+                              bodyContent.className = 'shadow shadow-sm'
+                              // Append the button to the popover-body
+                              popoverHeaderBody.appendChild(bodyContent); 
+                              const tableHTML = `<table id="myTable" class="hover stripe table-info"></table>`;
+
+                              // Insert the table into the element with ID 'respondPop_header'
+                              $('#respondPop_header_bodyContent').append(tableHTML);
+
+                              showRespondedAlerts(head_quarter)
+                              // You may also disconnect the observer if you only need to log once
+                              //observer.disconnect();
+                              //break;
+
+                            } else {
+                                console.log('false');
+                              }
+
+                        }
+                    }
+                }
+            });
+        });
+        // Configure the observer to watch for changes in the subtree (child elements) of the target node
+        var observerConfig = { childList: true, subtree: true };
+        // Start observing the target node for configured mutations
+        observer.observe(document.body, observerConfig);
+      }
+
+      function createDataTable(data) {
+            // Example data (replace this with your dynamic data)
+            let dynamicData = data;
+
+            // Customize columns
+            let columns = [
+                {
+                  render: function (data, type, row) {
+                    // You can customize the rendering of data in this column
+                    return '<div style = "width: 200px;">'+data+'</div>';
+                }},
+                {
+                  render: function (data, type, row) {
+                    // You can customize the rendering of data in this column
+                    return '<div style = "width: 200px;">'+data+'</div>';
+                }},
+                {
+                  render: function (data, type, row) {
+                    // You can customize the rendering of data in this column
+                    return '<div class="mb-2" style = "width: 200px;">'+
+                      '<button type="button" onclick="showMore(this.id)" class="btn btn-primary more_details" id="'+data+'" data-coreui-toggle="modal" data-coreui-target="#show_accident_incident_area">More</button>'+
+                      '<button type="button" onclick="markAsDone(this.id)" class="btn ms-2 btn-success text-white" id="'+data+'">Mark as done</button>'+
+                      '</div>';
+                }},
+            ];
+
+            // Create DataTable
+            let table = new DataTable('#myTable', {
+                searching: false,
+                paging: false,
+                scrollY: 200,
+                responsive: true,
+                fixedHeader: true,
+                ordering:false,
+                info: false,
+                data: dynamicData, // Set the data for the table
+                columns: columns,
+                drawCallback: function () {
+                    $('.dataTables_scrollBody').addClass('border-0');
+                    popoverList.forEach((popover) => {
+                    popover.update();
+                  });
+                  $('.sorting_disabled').addClass('border-0');
+                  $('.dataTables_scrollHead').addClass('d-none');
+                }
+            });
+        }
+
+      async function showRespondedAlerts(head_quarter) {
+      const q = query(
+        collection(db, "temp_logs"),
+        where("headquarter_id", "==", head_quarter),
+        where("responded", "==", true)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      let dynamicData = [];
+
+      querySnapshot.forEach((doc) => {
+        // Retrieve document ID
+        const docId = doc.id;
+
+        // Retrieve specific fields from the document
+        const data = doc.data();
+        const Date = data.date_added.toDate(); // Replace "field1" with the actual field name
+        const Location = data.alert_location; // Replace "field2" with the actual field name
+
+        // Create an object with document ID and matched fields
+        const documentInfo = [
+          Location,
+          Date,
+          docId,
+      ];
+
+        dynamicData.push(documentInfo);
+      });
+
+      // Now, dynamicData contains an array of objects with document ID and matched fields
+      console.log(dynamicData);
+      createDataTable(dynamicData)
+    }
+
+      window.showMore = function(value) {
+          getDataByDocumentId(value)
+          document.getElementById('mark_as_done').onclick = function ()
+          {
+            deleteData(value);
+          }
+      };
+
+      window.markAsDone = function(value) {
+           deleteData(value);
+      }
+
+      async function getDataByDocumentId(docId) {
+      const docRef = doc(db, "temp_logs", docId);
+
+      try {
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          // Document exists, you can access its data
+          const data = docSnap.data();
+          const file_url = data.media_url;
+          const alert_location = data.alert_location;
+          const alert_By = data.user_name;
+          setContent(file_url, alert_location, alert_By, true)
+          
+        } else {
+          console.log("No such document!");
+        }
+      } catch (e) {
+        console.error("Error getting document:", e);
+      }
+     }
+
+      async function deleteData(id) 
+      {
+        const docRef = doc(db, "temp_logs", id);
+        try {
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            // Document exists, you can access its data
+            
+            const data = docSnap.data();
+            const profile = document.getElementById("profile_id").textContent;
+            const expoToken = data.expoToken;
+            const head_quarter = data.headquarter_id;
+            const hqLocationName = data.headquarter_location_name;
+            const accident_incident_area_title_text = data.alert_location;
+
+            let message = ' has successfully responded to your report. Victims are sent to the nearest hospital\n\nThis message is from ' + capitalizeFirstLetterOfWords(head_quarter) + ' headquarters.\n\nHeadquarter Location: '+capitalizeFirstLetterOfWords(hqLocationName)
+            let markAsDone = true;
+            sendPushNotification(expoToken, profile, head_quarter, accident_incident_area_title_text, false, message, markAsDone);
+
+            await deleteDoc(docRef);
+            respondedCount(head_quarter)
+            
+            
+          } else {
+            console.log("No such document!");
+          }
+        } catch (e) {
+          console.error("Error getting document:", e);
+        }
+      }
     </script>
   </body>
 </html>
