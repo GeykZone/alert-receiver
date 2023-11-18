@@ -1,9 +1,15 @@
-export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq) {
+export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq, hospitalList) {
   // Find the parent element with id "map-box"
   const mapBox = document.getElementById('map-box');
 
   // Check if the map div already exists
   const mapDiv = document.getElementById('map');
+
+  // Define the hospitals' coordinates
+  const hospitals = hospitalList;
+
+  //console.log('Hospital List:', hospitals);
+
   if (mapDiv) {
     // If it exists, remove it
     mapBox.removeChild(mapDiv);
@@ -30,7 +36,7 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
 
   // Create a function to update the map with new destinations
   function updateMap(newDestinations) {
-    console.log(newDestinations);
+    // console.log(newDestinations);
     // Remove existing markers and routes
 
     map.remove();
@@ -54,12 +60,12 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
       // Create a marker for the origin and name it marker_origin
       const marker_origin = new mapboxgl.Marker({
         element: createCustomMarkerElementForOrigin(),
-        anchor: 'bottom'
+        anchor: 'center'
       }).setLngLat(origin).addTo(map);
 
       // Create a origin custom popup
       const originCustomPopup = new mapboxgl.Popup({
-        offset: 30
+        offset: 10
       }).setDOMContent(createCustomPopupContentForOrigin());
 
       // Set the popup for the marker
@@ -77,6 +83,68 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
 
       // Loop through the new destinations and calculate routes
       newDestinations.forEach((destination, index) => {
+        // Find the nearest hospital
+        const nearestHospital = findNearestHospital(destination.coordinates, hospitals);
+        //console.log(nearestHospital.nearestHospital)
+
+        // Use the Mapbox Directions API to calculate and display the route from destination to the nearest hospital
+        const hospitalApiUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${destination.coordinates[0]},${destination.coordinates[1]};${nearestHospital.nearestHospital[1]},${nearestHospital.nearestHospital[0]}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=${mapboxAccessToken}`;
+        fetch(hospitalApiUrl).then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        }).then(data => {
+          // Add the route to the map with a different color
+          const hospitalRouteId = `hospital-route-${index}`;
+          map.addSource(hospitalRouteId, {
+            type: 'geojson',
+            data: data.routes[0].geometry
+          });
+          map.addLayer({
+            id: hospitalRouteId,
+            type: 'line',
+            source: hospitalRouteId,
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            paint: {
+              'line-color': 'green',
+              // Set the color for the hospital route
+              'line-width': 6
+            }
+          });
+        }).catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+
+        // Create a marker for the hospital and name it marker_hospital
+        const marker_hospital = new mapboxgl.Marker({
+          element: createCustomMarkerElementForHospital(index),
+          anchor: 'center'
+        }).setLngLat([nearestHospital.nearestHospital[1], nearestHospital.nearestHospital[0]]).addTo(map);
+        const hospital_name = nearestHospital.hospital_name;
+        const hospital_address = nearestHospital.hospital_address;
+
+        // Create a hospital custom popup
+        const hospitalCustomPopup = new mapboxgl.Popup({
+          offset: 10
+        }).setDOMContent(createCustomPopupContentForHospital(hospital_name, hospital_address));
+
+        // Set the popup for the marker
+        marker_hospital.setPopup(hospitalCustomPopup);
+
+        // Show the popup on marker hover
+        marker_hospital.getElement().addEventListener('mouseenter', () => {
+          hospitalCustomPopup.addTo(map);
+        });
+
+        // Remove the popup on marker mouseleave
+        marker_hospital.getElement().addEventListener('mouseleave', () => {
+          hospitalCustomPopup.remove();
+        });
+
         // Use the Mapbox Directions API to calculate and display the route
         const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${origin[0]},${origin[1]};${destination.coordinates[0]},${destination.coordinates[1]}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=${mapboxAccessToken}`;
         fetch(apiUrl).then(response => {
@@ -111,7 +179,7 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
         // Create a marker for the destination and name it marker_destination
         const marker_destination = new mapboxgl.Marker({
           element: createCustomMarkerElementForDestination(index),
-          anchor: 'bottom'
+          anchor: 'center'
         }).setLngLat(destination.coordinates).addTo(map);
 
         // Store the destination information as a property of the marker
@@ -124,7 +192,7 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
 
         // Create a custom popup
         const destinationCustomPopup = new mapboxgl.Popup({
-          offset: 30
+          offset: 10
         }).setDOMContent(createCustomPopupContentForDestination(index, marker_destination.properties.location_id));
 
         // Set the popup for the marker
@@ -203,7 +271,18 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
     return customMarker;
   }
 
-  //customPopup for origin
+  // Function to create a custom marker element for the hospital
+  function createCustomMarkerElementForHospital(index) {
+    const customMarker = document.createElement('div');
+    customMarker.className = 'custom-marker-hospital';
+    customMarker.style.backgroundImage = `url('../assets/brand/hospital.png')`; // Adjust the path accordingly
+    customMarker.style.width = '70px'; // Adjust the width and height of your custom marker
+    customMarker.style.height = '70px';
+    customMarker.style.backgroundSize = 'cover'; // Set the background size to cover
+    return customMarker;
+  }
+
+  // Function to create a custom popup content 
   function createCustomPopupContentForOrigin() {
     // Create a container element for the popup
     const popupContainer = document.createElement('div');
@@ -229,6 +308,55 @@ export function genMap(origin, destinations, mapboxAccessToken, profile_name, hq
     // Append the content to the container
     popupContainer.appendChild(popupContent);
     return popupContainer;
+  }
+  function createCustomPopupContentForHospital(hospital_name, hospital_address) {
+    // Create a container element for the popup
+    const popupContainer = document.createElement('div');
+    popupContainer.className = 'custom-popup';
+
+    // Add your custom content to the popup
+    const popupContent = document.createElement('div');
+    popupContent.textContent = hospital_name + ', ' + hospital_address + '.';
+
+    // Append the content to the container
+    popupContainer.appendChild(popupContent);
+    return popupContainer;
+  }
+
+  // Function to find the nearest hospital
+  function findNearestHospital(destinationCoordinates, hospitals) {
+    let nearestHospital = null;
+    let minDistance = Infinity;
+    let hospital_name = null;
+    let hospital_address = null;
+    hospitals.forEach(hospital => {
+      const distance = calculateDistance(destinationCoordinates, [hospital.lat, hospital.long]);
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestHospital = [hospital.lat, hospital.long];
+        hospital_name = [hospital.docId];
+        hospital_address = [hospital.hospital_address];
+      }
+    });
+    return {
+      nearestHospital: nearestHospital,
+      hospital_name: hospital_name,
+      hospital_address: hospital_address
+    };
+  }
+  function calculateDistance(coord1, coord2) {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(coord2[0] - coord1[1]);
+    const dLon = deg2rad(coord2[1] - coord1[0]);
+    // console.log("coord 1: ", coord2[0], " - ", coord1[1])
+    //console.log("coord 2: ", coord2[1], " - ", coord1[0])
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(coord1[1])) * Math.cos(deg2rad(coord2[0])) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in km
+    return distance;
+  }
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
   }
 }
 

@@ -68,12 +68,6 @@
           box-shadow:  0px 0px 5px rgba(0, 0, 0, 0.2);
           font-size: 16px;
           color: white;
-          
-          /* Center the content using flexbox */
-          display: flex;
-          flex-direction: column; /* Stack children vertically */
-          justify-content: center; /* Center horizontally */
-          align-items: center; /* Center vertically */
         }
 
         .mapboxgl-popup-content {
@@ -208,7 +202,10 @@
                 </div>
               </div>
               <div class="mb-3">
-                <button type="button" class="btn btn-primary" id="auto_generate" >Auto Generate</button>
+                <button type="button" class="btn btn-primary" id="auto_generate" >
+                  <span id="auto_generate_txt">Auto Generate</span>
+                  <span class="spinner-border spinner-border-sm mt-1 ms-auto d-none" id="auto_generate_loader" aria-hidden="true"></span>
+                </button>
               </div>
             </form>
           </div>
@@ -387,8 +384,7 @@
     <script type="module"> 
        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
        import { doc, getDoc, getDocs, deleteDoc, getFirestore, collection, query, where, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
-       import { genMap, setContent, getFileExtension } from "./js/alert_map.js"
-       
+       import { genMap, setContent, getFileExtension } from "./js/alert_map.js"      
        const logoutButton =  document.getElementById("logout");
        const respondButton = document.getElementById("respond_btn");
        const db = getFirestore();
@@ -534,7 +530,10 @@
                 });
             });
 
-            genMap(origin, destinations, mapboxAccessToken, profile_name, capitalizeFirstLetterOfWords(headquarter_id));
+          // Assign the result to a variable
+          const hospitalList = await getHospitalList();
+
+          genMap(origin, destinations, mapboxAccessToken, profile_name, capitalizeFirstLetterOfWords(headquarter_id), hospitalList);
        }
 
       function capitalizeFirstLetterOfWords(str) {
@@ -677,6 +676,8 @@
 
       function getLocation() 
       {
+        document.getElementById("auto_generate_txt").classList.add("d-none");
+        document.getElementById("auto_generate_loader").classList.remove("d-none");
         if ("geolocation" in navigator) {
            navigator.geolocation.getCurrentPosition(function (position) {
             const latitude = position.coords.latitude;
@@ -698,9 +699,15 @@
                     } else {
                         document.getElementById('result').innerHTML = 'Location not found';
                     }
+
+                    document.getElementById("auto_generate_txt").classList.remove("d-none");
+                    document.getElementById("auto_generate_loader").classList.add("d-none");
                 })
                 .catch(error => {
                     console.error('Error:', error);
+
+                    document.getElementById("auto_generate_txt").classList.remove("d-none");
+                    document.getElementById("auto_generate_loader").classList.add("d-none");
                 });
 
           }, function (error) {
@@ -719,9 +726,14 @@
                 alert("An unknown error occurred.");
                 break;
             }
+
+            document.getElementById("auto_generate_txt").classList.remove("d-none");
+            document.getElementById("auto_generate_loader").classList.add("d-none");
           });
         } else {
           alert("Geolocation is not supported by your browser.");
+          document.getElementById("auto_generate_txt").classList.remove("d-none");
+          document.getElementById("auto_generate_loader").classList.add("d-none");
         }
       }
       document.getElementById("auto_generate").addEventListener("click", getLocation);
@@ -809,7 +821,7 @@
         });
       };
 
-      // Function to add or remove styles based on screen width
+      // Function to add or remove footer styles based on screen width
       function footerStyle() 
       {
           const footer = document.getElementById("footer");
@@ -1200,6 +1212,33 @@
           console.error("Error getting document:", e);
         }
       }
+      
+      async function getHospitalList() {
+      const hospitalsCollection = collection(db, '/profile/hospital/head_quarters');
+
+      try {
+        const snapshot = await getDocs(hospitalsCollection);
+        
+        const hospitals = [];
+
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          //query fields of each document ids
+          const { lat, long, hospital_address } = data;
+
+           // Log document ID along with lat and long
+          const docId = doc.id;
+
+          // push to the hospitals array
+          hospitals.push({ docId, lat, long, hospital_address });
+        });
+
+        return hospitals;
+      } catch (error) {
+        console.error('Error getting hospitals:', error);
+        throw error; // You may want to handle the error according to your application's needs
+      }
+    }
     </script>
   </body>
 </html>
