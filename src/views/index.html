@@ -52,6 +52,10 @@
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-1.13.7/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.js"></script>
 
     <style>
+        .swal2-container {
+          z-index: 20000 !important;
+        }
+
         #map {
             width: 100%;
             height: 600px;
@@ -161,7 +165,8 @@
         ::-ms-scrollbar-thumb  {
           border-radius: 10px;
           background-color: #959aa14d;
-        }
+        } 
+
 
     </style>
   </head>
@@ -216,43 +221,107 @@
       </div>
     </div>
 
-      <!-- Show Accident/Incident area -->
-      <div class="modal fade" id="show_accident_incident_area" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header text-white px-4 py-2" style="background-color: #fd7e14;">
-              <h6 class="modal-title" id="accident_incident_area_title">Highway Incident Location Info</h6>
-              <button type="button" class="btn-close" id="close_accident_incident_area" data-coreui-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body bg-light">
+    <!-- Show Accident/Incident area -->
+    <div class="modal fade" id="show_accident_incident_area" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header text-white px-4 py-2" style="background-color: #fd7e14;">
+            <h6 class="modal-title" id="accident_incident_area_title">Highway Incident Location Info</h6>
+            <button type="button" class="btn-close" id="close_accident_incident_area" data-coreui-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body bg-light">
 
-              <div class="mb-3 rounded rounded-4  px-3 py-3 bg-white shadow shadow" >
-              <!-- Video element -->
-              <div class="py-3 px-3 d-none d-flex rounded rounded-4 border-0 shadow-sm justify-content-center" id="videoContainer" style="background-color: #C7C9CB;">
-                <video controls autoplay class=" border-0 shadow rounded rounded-4" style="display: none;" id="videoElement"></video>
-              </div>
-              
-              <!-- Image element -->
-              <div class="py-3 px-3 d-none d-flex rounded rounded-4 border-0 shadow-sm justify-content-center" id="imageContainer" style="background-color: #C7C9CB;">
-                <a href=""  target="_blank" id="imageLink"> <!-- Leave href empty initially -->
-                  <img class="border-0 shadow rounded rounded-4" id="imageElement" src="" alt="">
-                </a>
-              </div>
-              
-              </div>
+            <div class="mb-3 rounded rounded-4  px-3 py-3 bg-white shadow shadow" >
+            <!-- Video element -->
+            <div class="py-3 px-3 d-none d-flex rounded rounded-4 border-0 shadow-sm justify-content-center" id="videoContainer" style="background-color: #C7C9CB;">
+              <video controls autoplay class=" border-0 shadow rounded rounded-4" style="display: none;" id="videoElement"></video>
+            </div>
+            
+            <!-- Image element -->
+            <div class="py-3 px-3 d-none d-flex rounded rounded-4 border-0 shadow-sm justify-content-center" id="imageContainer" style="background-color: #C7C9CB;">
+              <a href=""  target="_blank" id="imageLink"> <!-- Leave href empty initially -->
+                <img class="border-0 shadow rounded rounded-4" id="imageElement" src="" alt="">
+              </a>
+            </div>
+            
+            </div>
 
-              <div class=" py-2 px-2 rounded rounded-4 shadow-sm bg-white" >
-                <div class="rounded rounded-4 py-2 text-center border-1 fw-bold shadow-sm text-black bg-white" >Reported by <span  id="alerterId">Sample User</span></div>
-              </div>
-              
+            <div class=" py-2 px-2 rounded rounded-4 shadow-sm bg-white" >
+              <div class="rounded rounded-4 py-2 text-center border-1 fw-bold shadow-sm text-black bg-white" >Reported by <span  id="alerterId">Sample User</span></div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary d-none" id="respond_btn">Respond</button>
-              <button type="button" class="btn btn-success text-white d-none" id="mark_as_done">Mark as done</button>
-            </div>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary d-none" id="respond_btn">Respond</button>
+            <button type="button" class="btn btn-success text-white d-none" id="mark_as_done">Mark as done</button>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Update Accout Info -->
+    <div class="modal fade" id="update_account_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div  class="modal-header text-white px-4 py-2" style="background-color: #fd7e14;">
+            <h6 class="modal-title" id="exampleModalLabel">Account Information</h6>
+            <button type="button" class="btn-close" id="close_update_account_form_modal"  data-coreui-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body "> 
+            <form>
+              <div class="mb-3">
+                <h6>Press this button if you want to receive a reset password email</h6>
+                <button type="button" class="btn btn-primary mt-2" id="reset_password_btn" >
+                  <span id="reset_password_txt">Reset Password</span>
+                  <span class="spinner-border spinner-border-sm mt-1 ms-auto d-none" id="reset_password_spinner" aria-hidden="true"></span>
+                </button>
+              </div>
+              <div class="mb-3 has-validation">
+                <label for="recipient-name" class="col-form-label">First Name:</label>
+                <input type="text" class="form-control" id="first_name">
+                <div class="invalid-feedback">
+                  Invalid input.
+                </div>
+              </div>
+              <div class="mb-3 has-validation">
+                <label for="recipient-name" class="col-form-label">Middle Name:</label>
+                <input type="text" class="form-control" id="middle_name">
+                <div class="invalid-feedback">
+                  Invalid input.
+                </div>
+              </div>
+              <div class="mb-5 has-validation">
+                <label for="recipient-name" class="col-form-label">Last Name:</label>
+                <input type="text" class="form-control" id="last_name">
+                <div class="invalid-feedback">
+                  Invalid input.
+                </div>
+              </div>
+              <div class="mb-3 has-validation">
+                <h6 class="mb-2">Default Information (Non-updatable Fields)</h6>
+                <label for="recipient-name" class="col-form-label">Email:</label>
+                <div class="border bg-success text-white border-1 border-dark border-opacity-50 rounded rounded-3" style="padding: 7px 5px 7px 10px;" id="email_add">Data</div>
+              </div>
+              <div class="mb-3 has-validation">
+                <label for="recipient-name" class="col-form-label">Headquarter:</label>
+                <div class="border bg-success text-white border-1 border-dark border-opacity-50 rounded rounded-3" style="padding: 7px 5px 7px 10px;" id="head_quarter">Data</div>
+              </div>
+              <div class="mb-3 has-validation">
+                <label for="recipient-name" class="col-form-label">Profile:</label>
+                <div class="border bg-success text-white border-1 border-dark border-opacity-50 rounded rounded-3" style="padding: 7px 5px 7px 10px;" id="profile_typr">Data</div>
+              </div>
+              <div class="mb-3 has-validation">
+                <label for="recipient-name" class="col-form-label">Role:</label>
+                <div class="border bg-success text-white border-1 border-dark border-opacity-50 rounded rounded-3" style="padding: 7px 5px 7px 10px;" id="role">Data</div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="submit_new_location" >Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
       <div class="sidebar-brand d-none d-md-flex">
@@ -272,13 +341,13 @@
             </svg> Validate Location</a>
         </li>
 
-        <li class="nav-item"><a class="nav-link" style="cursor: pointer;"  id="add_users">
+        <li class="nav-item"><a class="nav-link d-none" style="cursor: pointer;"  id="add_users">
           <svg class="nav-icon">
             <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user-plus"></use>
           </svg> Add Users</a>
        </li>
 
-       <li class="nav-item"><a class="nav-link" style="cursor: pointer;" id="user_list">
+       <li class="nav-item"><a class="nav-link d-none" style="cursor: pointer;" id="user_list">
         <svg class="nav-icon">
           <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
         </svg> User List</a>
@@ -313,36 +382,31 @@
             <h5 id="profile_id"></h5>
           </ul>
           <ul class="header-nav ms-auto">
-            <li class="nav-item "><a class="nav-link" href="#" >
+            <li class="nav-item " id="unresponded_alert_list" style="cursor: pointer;"><a class="nav-link" 
+              tabindex="0"
+              data-coreui-toggle="responded_reports_popover" 
+              data-coreui-placement="top"
+              data-coreui-custom-class="unresponded_reports_popover"
+              data-coreui-title="Unresponded Reports"
+              data-coreui-content=" " >
                 <svg class="icon icon-lg" >
                   <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-bell"></use>
                 </svg>
-                <span id="new_alerts" class="position-absolute start-10 translate-middle badge rounded-pill bg-danger">
-                  2
-                </span>
-              </a>
-            </li>
-            <li class="nav-item "><a class="nav-link" href="#">
-                <svg class="icon icon-lg">
-                  <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-list-rich"></use>
-                </svg>
-                <span id="old_alerts" class="position-absolute start-10 translate-middle badge rounded-pill bg-danger">
-                  2
-                </span>
+                <span id="new_alerts" class="position-absolute d-none start-10 translate-middle badge rounded-pill bg-danger"></span>
               </a>
             </li>
           </ul>
           <ul class="header-nav ms-3" style="margin-bottom: 5px;">
-            <li class="nav-item dropdown"><a class="nav-link py-0" data-coreui-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown"><a id="other_options" class="nav-link py-0" data-coreui-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                 <div class="avatar avatar-md"><img class="avatar-img" src="assets/brand/irms_logo_circle.png" alt="user@email.com"></div></a>
               <div class="dropdown-menu dropdown-menu-end pt-0">
-                <div class="dropdown-header bg-light py-2">
-                  <div class="fw-semibold">Account</div>
-                </div><a class="dropdown-item" href="#">
+                <div class="dropdown-header  py-2" style="background-color: #fd7e14;">
+                  <div class="fw-semibold text-white" >Account</div>
+                </div><a class="dropdown-item" id="update_account_option" style="cursor: pointer;" data-coreui-toggle="modal" data-coreui-target="#update_account_form">
                   <svg class="icon me-2">
                     <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-lock-locked"></use>
                   </svg> Update Account</a>
-                  <a class="dropdown-item" href="#" id="logout">
+                  <a class="dropdown-item" style="cursor: pointer;" id="logout">
                   <svg class="icon me-2">
                     <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
                   </svg> Logout</a>
@@ -382,10 +446,12 @@
     <!-- Plugins and scripts required by this view-->
     <script type="module" src="js/firebaseConfig.js"></script>
     <script type="module"> 
-       import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+       import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
        import { doc, getDoc, getDocs, deleteDoc, getFirestore, collection, query, where, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
        import { genMap, setContent, getFileExtension } from "./js/alert_map.js"      
        const logoutButton =  document.getElementById("logout");
+       const updateAccountId =  document.getElementById("update_account_option");
+       const reset_passwordID =  document.getElementById("reset_password_btn");
        const respondButton = document.getElementById("respond_btn");
        const db = getFirestore();
        const check = getAuth();
@@ -395,7 +461,7 @@
            toast: true,
            icon: 'success',
            title: 'General Title',
-           position: 'top-right',
+           position: 'top',
            showConfirmButton: false,
            timer: 5000,
            timerProgressBar: true,
@@ -430,6 +496,16 @@
         return popover;
       });
 
+      const popoverTriggerDropdownAlerts = document.querySelectorAll('[data-coreui-toggle="unresponded_reports_popover"]')
+      const popoverDropdownAlertsClass = 'unresponded_reports_popover';
+      const popoverListDropdownAlertsClass = [...popoverTriggerDropdownAlerts].map((e) => {
+      const popover2 = new coreui.Popover(e, {
+        container: 'body',
+        trigger: 'click',
+      });
+        return popover2;
+      });
+
       // Add mouseenter event listener to the sidebar to update popover positions
       document.getElementById(sidebarId).addEventListener('mouseout', () => {
           // Loop through the popover list and update positions
@@ -454,13 +530,20 @@
           const  first_name  = fulfilledValue.first_name;
           const  middle_name  = fulfilledValue.middle_name;
           const  last_name = fulfilledValue.last_name;
-          const  age = fulfilledValue.age;
-          const  street_address = fulfilledValue.street_address;
-          const  city_municipality = fulfilledValue.city_municipality;
-          const  province = fulfilledValue.province;
           const  profile = fulfilledValue.profile;
           const  role = fulfilledValue.role;
           const  head_quarter = fulfilledValue.head_quarter;
+
+          updateAccountId.onclick = function ()
+          {
+            changeMyAccountInfo(user.email, first_name, middle_name, last_name, uid, head_quarter, profile)
+          }
+
+          if(role === "Admin")
+          {
+            document.getElementById('add_users').classList.remove('d-none')
+            document.getElementById('user_list').classList.remove('d-none')
+          }
 
           const originLongLat = getOriginLongLat(profile, head_quarter).then((resultValues) =>{
           const origin = [resultValues.long, resultValues.lat];
@@ -489,7 +572,10 @@
 
           respondedCount(head_quarter);
 
-          renderRespondedReportsPopOver(head_quarter)
+          alertCount(head_quarter);
+
+          renderRespondedReportsPopOver(head_quarter);
+          renderUnrespondedReportsPopOver(head_quarter);
 
           // Call the function initially and add an event listener to update on window resize
           footerStyle();
@@ -579,12 +665,14 @@
               alerts.reverse();
               get_dest(origin, head_quarter, profile_name) 
               respondedCount(head_quarter)
+              alertCount(head_quarter)
               
             }
             else if(change.type === "removed")
             {
               get_dest(origin, head_quarter, profile_name) 
               respondedCount(head_quarter)
+              alertCount(head_quarter)
               alerts = [];
             }
             
@@ -821,6 +909,52 @@
         });
       };
 
+      async function sendResetPasswordEmail(email)
+      { 
+        $("#reset_password_txt").addClass("d-none")
+        $("#reset_password_spinner").removeClass("d-none")
+        sendPasswordResetEmail(check, email)
+          .then(() => {
+            console.log("email sent: " + email)
+            toastMixin.fire({
+            title: 'A reset email link has been sent to '+email,
+            icon: 'success',
+            timer: 3000
+          });
+
+            $("#reset_password_txt").removeClass("d-none")
+            $("#reset_password_spinner").addClass("d-none")
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            toastMixin.fire({
+            title: 'Something went wrong reset password did not sent to '+email,
+            icon: 'warning',
+            timer: 3000
+          });
+            $("#reset_password_txt").removeClass("d-none")
+            $("#reset_password_spinner").addClass("d-none")
+          });
+          
+      }
+
+      function changeMyAccountInfo(email, first_name, middle_name, last_name, uid, head_quarter, profile)
+      {
+        console.log("id: " +uid)
+          reset_passwordID.onclick = function ()
+          {
+            sendResetPasswordEmail(email)
+          }
+      }
+
+      document.getElementById("other_options").onclick = function ()
+      {
+        popoverList.forEach((popover2) => {
+          popover2.hide();
+        });
+      }
+
       // Function to add or remove footer styles based on screen width
       function footerStyle() 
       {
@@ -839,36 +973,9 @@
 
       function respondToALert(head_quarter, profile, hqLocationName)
       {
-        respondButton.onclick = async function ()
+        respondButton.onclick = function ()
         {
-          var accident_incident_area_title = document.getElementById("accident_incident_area_title");
-          var accident_incident_area_title_text = accident_incident_area_title.textContent || accident_incident_area_title.innerText;
-
-          var alerterId = document.getElementById("alerterId");
-          var alerterId_text = alerterId.textContent || alerterId.innerText;
-
-          // Define your query with multiple conditions
-          const q = query(collection(db, "temp_logs"), 
-            where("headquarter_id", "==", head_quarter),
-            where("alert_location", "==", accident_incident_area_title_text),
-            where("user_name", "==", alerterId_text),
-            where("responded", "==", false)
-          );
-
-          // Execute the query and retrieve the documents
-          const querySnapshot = await getDocs(q);
-
-          // Iterate through the documents to get the "expoToken" values
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const expoToken = data.expoToken;
-
-            let message = ' is currently underway. Please wait for the responding team.\n\nThis message is from ' + capitalizeFirstLetterOfWords(head_quarter) + ' headquarters.\n\nHeadquarter Location: '+hqLocationName
-            let markAsDone = false;
-            sendPushNotification(expoToken, profile, head_quarter, accident_incident_area_title_text, alerterId_text, message, markAsDone);
-            
-          });
-
+          responded(head_quarter, profile, hqLocationName)
         }
       }
 
@@ -892,6 +999,33 @@
           } else {
             respondedCountBadge.classList.remove('d-none');
             respondedCountBadge.textContent = respondedCount;
+          }
+
+        } catch (error) {
+          console.error("Error getting documents: ", error);
+        }
+      }
+      
+      async function alertCount(head_quarter)
+      {
+        const q = query(
+          collection(db, "temp_logs"),
+          where("headquarter_id", "==", head_quarter),
+          where("responded", "==", false)
+        );
+
+        try {
+          const querySnapshot = await getDocs(q);
+          let count = querySnapshot.size; // Get the count of documents
+
+          const alertCountBadge = document.getElementById('new_alerts');
+          const alertCount = parseInt(count); // Replace with the actual count value
+
+          if (alertCount <= 0) {
+            alertCountBadge.classList.add('d-none');
+          } else {
+            alertCountBadge.classList.remove('d-none');
+            alertCountBadge.textContent = alertCount;
           }
 
         } catch (error) {
@@ -1064,6 +1198,90 @@
         observer.observe(document.body, observerConfig);
       }
 
+      function renderUnrespondedReportsPopOver(head_quarter) 
+      {
+      
+        // Select the element with the class 'responded_reports_popover'
+        var respondedReportsPopover = document.querySelector('.unresponded_reports_popover');
+
+        // Create a new MutationObserver with a callback function
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                // Check if the target node (addedNodes) contains the desired element
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        // Check if the added node is defined and has the class 'responded_reports_popover'
+                        if (
+                            mutation.addedNodes[i] &&
+                            mutation.addedNodes[i].classList &&
+                            mutation.addedNodes[i].classList.contains('unresponded_reports_popover')
+                        ) {
+                            // Select the element with the class 'responded_reports_popover'
+                            var respondedReportsPopover = document.querySelector('.unresponded_reports_popover');
+                            var popoverHeader = respondedReportsPopover.querySelector('.popover-header');
+                            var popoverBody = respondedReportsPopover.querySelector('.popover-body');
+                            var popoverArrow = respondedReportsPopover.querySelector('.popover-arrow');
+
+                            // Check if the element exists and has a child element with the class 'popover-header'
+                            if (respondedReportsPopover && popoverHeader && popoverBody && popoverArrow) {
+
+                              respondedReportsPopover.classList.add("border-0");
+                              respondedReportsPopover.classList.add("shadow");
+                              respondedReportsPopover.classList.add("shadow-sm");
+                              
+                              // Add the 'id' attribute with the value 
+                              popoverHeader.id = 'unrespondPop_header';
+                              const popoverHeaderId = document.getElementById('unrespondPop_header');
+                              popoverBody.id = 'unrespondPop_body';
+                              const popoverHeaderBody = document.getElementById('unrespondPop_body');
+                              popoverArrow.id = 'unrespondedArrowTip';
+                              // Select the element
+                              var element = document.querySelector('.popover .unresponded_reports_popover .bs-popover-auto .popover-arrow');
+
+                              // Check if the element exists
+                              if (element) {
+                                // Set the ID
+                                element.setAttribute('id', 'yourDesiredId');
+                              }
+
+                              // Apply the CSS style
+                              popoverHeaderId.style.backgroundColor = '#fd7e14';
+                              popoverHeaderId.classList.add('text-white');
+                              popoverHeaderId.classList.add("border-0");
+                              popoverHeaderId.classList.add("shadow");
+                              popoverHeaderId.classList.add("shadow-sm");
+
+                              // Create a body element
+                              var bodyContent = document.createElement('div');
+                              bodyContent.id = 'unrespondPop_header_bodyContent';
+                              bodyContent.className = 'shadow shadow-sm'
+                              // Append the body to the popover-body
+                              popoverHeaderBody.appendChild(bodyContent);
+                              const tableHTML = `<table id="myTable2" class="hover stripe table-info"></table>`;
+
+                              // Insert the table into the element with ID 'respondPop_header'
+                              $('#unrespondPop_header_bodyContent').append(tableHTML);
+
+                              showUnrespondedAlerts(head_quarter)
+                              // You may also disconnect the observer if you only need to log once
+                              //observer.disconnect();
+                              //break;
+
+                            } else {
+                                console.log('false');
+                            }
+
+                        }
+                    }
+                }
+            });
+        });
+        // Configure the observer to watch for changes in the subtree (child elements) of the target node
+        var observerConfig = { childList: true, subtree: true };
+        // Start observing the target node for configured mutations
+        observer.observe(document.body, observerConfig);
+      }
+
       function createDataTable(data) {
             // Example data (replace this with your dynamic data)
             let dynamicData = data;
@@ -1111,6 +1329,50 @@
                 }
             });
         }
+      
+      function createDataTable2(data) {
+          // Example data (replace this with your dynamic data)
+          let dynamicData = data;
+
+          // Customize columns
+          let columns = [
+              {
+                render: function (data, type, row) {
+                  // You can customize the rendering of data in this column
+                  return '<div style = "width: 200px;">'+data+'</div>';
+              }},
+              {
+                render: function (data, type, row) {
+                  // You can customize the rendering of data in this column
+                  return '<div style = "width: 200px;">'+data+'</div>';
+              }},
+              {
+                render: function (data, type, row) {
+                  // You can customize the rendering of data in this column
+                  return '<div class="mb-2" style = "width: 200px;">'+
+                    '<button type="button" onclick="showMore2(this.id)" class="btn btn-primary more_details" id="'+data+'" data-coreui-toggle="modal" data-coreui-target="#show_accident_incident_area">More</button>'+
+                    '</div>';
+              }},
+          ];
+
+          // Create DataTable
+          let table = new DataTable('#myTable2', {
+              searching: false,
+              paging: false,
+              scrollY: 200,
+              responsive: true,
+              fixedHeader: true,
+              ordering:false,
+              info: false,
+              data: dynamicData, // Set the data for the table
+              columns: columns,
+              drawCallback: function () {
+                  $('.dataTables_scrollBody').addClass('border-0');
+                $('.sorting_disabled').addClass('border-0');
+                $('.dataTables_scrollHead').addClass('d-none');
+              }
+          });
+      }
 
       async function showRespondedAlerts(head_quarter) {
       const q = query(
@@ -1144,8 +1406,43 @@
 
       // Now, dynamicData contains an array of objects with document ID and matched fields
       console.log(dynamicData);
-      createDataTable(dynamicData)
+      createDataTable(dynamicData);
     }
+
+      async function showUnrespondedAlerts(head_quarter) {
+        const q = query(
+          collection(db, "temp_logs"),
+          where("headquarter_id", "==", head_quarter),
+          where("responded", "==", false)
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        let dynamicData = [];
+
+        querySnapshot.forEach((doc) => {
+          // Retrieve document ID
+          const docId = doc.id;
+
+          // Retrieve specific fields from the document
+          const data = doc.data();
+          const Date = data.date_added.toDate(); // Replace "field1" with the actual field name
+          const Location = data.alert_location; // Replace "field2" with the actual field name
+
+          // Create an object with document ID and matched fields
+          const documentInfo = [
+            Location,
+            Date,
+            docId,
+        ];
+
+          dynamicData.push(documentInfo);
+        });
+
+        // Now, dynamicData contains an array of objects with document ID and matched fields
+        console.log(dynamicData);
+        createDataTable2(dynamicData)
+      }
 
       window.showMore = function(value) {
           getDataByDocumentId(value)
@@ -1154,7 +1451,11 @@
             deleteData(value);
           }
       };
-
+      
+      window.showMore2 = function(value) {
+          getDataByDocumentId2(value)
+      };
+      
       window.markAsDone = function(value) {
            deleteData(value);
       }
@@ -1172,6 +1473,28 @@
           const alert_location = data.alert_location;
           const alert_By = data.user_name;
           setContent(file_url, alert_location, alert_By, true)
+          
+        } else {
+          console.log("No such document!");
+        }
+      } catch (e) {
+        console.error("Error getting document:", e);
+      }
+     }
+
+      async function getDataByDocumentId2(docId) {
+      const docRef = doc(db, "temp_logs", docId);
+
+      try {
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          // Document exists, you can access its data
+          const data = docSnap.data();
+          const file_url = data.media_url;
+          const alert_location = data.alert_location;
+          const alert_By = data.user_name;
+          setContent(file_url, alert_location, alert_By, false)
           
         } else {
           console.log("No such document!");
@@ -1212,7 +1535,38 @@
           console.error("Error getting document:", e);
         }
       }
-      
+
+      async function responded(head_quarter, profile, hqLocationName) {
+        
+        var accident_incident_area_title = document.getElementById("accident_incident_area_title");
+          var accident_incident_area_title_text = accident_incident_area_title.textContent || accident_incident_area_title.innerText;
+
+          var alerterId = document.getElementById("alerterId");
+          var alerterId_text = alerterId.textContent || alerterId.innerText;
+
+          // Define your query with multiple conditions
+          const q = query(collection(db, "temp_logs"), 
+            where("headquarter_id", "==", head_quarter),
+            where("alert_location", "==", accident_incident_area_title_text),
+            where("user_name", "==", alerterId_text),
+            where("responded", "==", false)
+          );
+
+          // Execute the query and retrieve the documents
+          const querySnapshot = await getDocs(q);
+
+          // Iterate through the documents to get the "expoToken" values
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const expoToken = data.expoToken;
+
+            let message = ' is currently underway. Please wait for the responding team.\n\nThis message is from ' + capitalizeFirstLetterOfWords(head_quarter) + ' headquarters.\n\nHeadquarter Location: '+hqLocationName
+            let markAsDone = false;
+            sendPushNotification(expoToken, profile, head_quarter, accident_incident_area_title_text, alerterId_text, message, markAsDone);
+            
+          });
+      }
+
       async function getHospitalList() {
       const hospitalsCollection = collection(db, '/profile/hospital/head_quarters');
 
