@@ -16,20 +16,11 @@
     <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
     <meta name="author" content="Łukasz Holeczek">
     <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
-    <title>CoreUI Free Bootstrap Admin Template</title>
-    <link rel="apple-touch-icon" sizes="57x57" href="assets/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="assets/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="assets/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="assets/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="assets/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="assets/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="assets/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-icon-180x180.png">
+    <title>IRMS: Register</title>
     <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/android-icon-192x192.png">
     <link rel="manifest" href="assets/favicon/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="assets/favicon/ms-icon-144x144.png">
@@ -41,42 +32,69 @@
     <link href="css/style.css" rel="stylesheet">
     <!-- We use those styles to show code examples, you should remove them in your application.-->
     <link href="css/examples.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
   <body>
     <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-md-6">
-            <div class="card mb-4 mx-4">
-              <div class="card-body p-4">
-                <h1>Register</h1>
-                <p class="text-medium-emphasis">Create your account</p>
-                <div class="input-group mb-3"><span class="input-group-text">
+            <div class="card mb-4 mx-0 border-0 rounded-5 shadow">
+              <div class="card-body p-4 text-center">
+                <div class="sidebar-brand-full bg-primary d-flex justify-content-center mb-3 border-0 rounded-5 shadow-sm" >
+                  <img class="img-thumbnail bg-transparent border-0 "  width="300" height="150" src="assets/brand/irms.png" alt="user@email.com">
+                </div>
+                <h3 >Intelligent Rescue Management System</h3>
+                <p class="text-medium-emphasis">Create Your Account</p>
+                <form class="text-start">
+                  <div class="input-group mb-3 has-validation"><span class="input-group-text ">
                     <svg class="icon">
                       <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
-                      
                     </svg></span>
-                  <input class="form-control" type="text" placeholder="Username">
+                  <input class="form-control" id="new_f_name" type="text" placeholder="First Name">
+                  <div class="invalid-feedback " >
+                    Invalid input
+                  </div>
                 </div>
-                <div class="input-group mb-3"><span class="input-group-text">
+                <div class="input-group mb-3 has-validation"><span class="input-group-text">
                     <svg class="icon">
-                      <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-envelope-open"></use>
+                      <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
                     </svg></span>
-                  <input class="form-control" type="text" placeholder="Email">
+                  <input class="form-control" id="new_m_name" type="text" placeholder="Middle Name">
+                  <div class="invalid-feedback " >
+                    Invalid input
+                  </div>
                 </div>
-                <div class="input-group mb-3"><span class="input-group-text">
+                <div class="input-group mb-3 has-validation"><span class="input-group-text">
+                  <svg class="icon">
+                    <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
+                  </svg></span>
+                <input class="form-control" id="new_l_name" type="text" placeholder="Last Name">
+                <div class="invalid-feedback " >
+                  Invalid input
+                </div>
+              </div>
+                <div class="input-group mb-3 has-validation"><span class="input-group-text">
                     <svg class="icon">
                       <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-lock-locked"></use>
                     </svg></span>
-                  <input class="form-control" type="password" placeholder="Password">
+                  <input class="form-control" id="new_pass" type="password" placeholder="Password">
+                  <div class="invalid-feedback " >
+                    Invalid input
+                  </div>
                 </div>
-                <div class="input-group mb-4"><span class="input-group-text">
+                <div class="input-group mb-4 has-validation"><span class="input-group-text">
                     <svg class="icon">
                       <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-lock-locked"></use>
                     </svg></span>
-                  <input class="form-control" type="password" placeholder="Repeat password">
+                  <input class="form-control" id="repeat_pass" type="password" placeholder="Repeat password">
+                  <div class="invalid-feedback " id="repeat_pass_invalid_feedback">
+                    Invalid input
+                  </div>
                 </div>
-                <button class="btn btn-block btn-success" type="button">Create Account</button>
+                </form>
+                
+                <button class="btn btn-block btn-primary text-white" id="create_acc_btn" type="button">Create Account</button>
               </div>
             </div>
           </div>
@@ -86,7 +104,203 @@
     <!-- CoreUI and necessary plugins-->
     <script src="node_modules/@coreui/coreui/dist/js/coreui.bundle.min.js"></script>
     <script src="node_modules/simplebar/dist/simplebar.min.js"></script>
-    <script> 
+    <script type="module" src="js/firebaseConfig.js"></script>
+    <script type="module"> 
+       import { getAuth, signInWithEmailAndPassword,  createUserWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+       import { doc, getDoc, getDocs, deleteDoc, getFirestore, collection, query, where, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+       import { genMap, setContent, getFileExtension } from "./js/alert_map.js";
+       const db = getFirestore();
+       const check = getAuth();
+       const createAccBtn =  document.getElementById("create_acc_btn");
+       var toastMixin = Swal.mixin({
+           toast: true,
+           icon: 'success',
+           title: 'General Title',
+           position: 'top',
+           showConfirmButton: false,
+           timer: 5000,
+           timerProgressBar: true,
+           didOpen: (toast) => {
+             toast.addEventListener('mouseenter', Swal.stopTimer)
+             toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+      // Function to get the value of a query parameter from the URL
+      function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+      }
+      // Get the value of the 'email' query parameter
+      var emailParam = getQueryParam('email');
+      if(emailParam)
+      {
+        checkEmail (emailParam);
+      }
+      else
+      {
+        window.location.href = "login.html";
+      }
+
+      function submitNewUser (email, head_quarter, profile, role)
+      {
+        createAccBtn.onclick = function ()
+        {
+          let new_f_name_id = document.getElementById("new_f_name");
+          let new_m_name_id = document.getElementById("new_m_name"); 
+          let new_l_name_id = document.getElementById("new_l_name"); 
+          let new_pass_id = document.getElementById("new_pass"); 
+          let repeat_pass_id = document.getElementById("repeat_pass"); 
+          let repeat_pass_invalid_feedback_id = document.getElementById("repeat_pass_invalid_feedback"); 
+          let isValid = true;
+
+        if(new_f_name_id.value.trim().length === 0)
+        {
+          new_f_name_id.classList.add("is-invalid");
+          isValid = false;
+        }
+        if(new_m_name_id.value.trim().length === 0)
+        {
+          new_m_name_id.classList.add("is-invalid");
+          isValid = false;
+        }
+        if(new_l_name_id.value.trim().length === 0)
+        {
+          new_l_name_id.classList.add("is-invalid");
+          isValid = false;
+        }
+        if(new_pass_id.value.trim().length === 0)
+        {
+          new_pass_id.classList.add("is-invalid");
+          isValid = false;
+        }
+        if(repeat_pass_id.value.trim().length === 0)
+        {
+          repeat_pass_id.classList.add("is-invalid");
+          repeat_pass_invalid_feedback_id.innerHTML="Invalid input";
+          isValid = false;
+        }
+        if(repeat_pass_id.value != new_pass_id.value)
+        {
+          repeat_pass_id.classList.add("is-invalid");
+          repeat_pass_invalid_feedback_id.innerHTML="Password did not matched";
+          isValid = false;
+        }
+        
+
+        if(isValid)
+        {
+          addAuthentication (email, new_pass_id.value, new_f_name_id.value, new_m_name_id.value, new_l_name_id.value, head_quarter, profile, role);
+        }
+        
+        }
+      }
+
+      async function checkEmail (email)
+      {
+        const docRef = doc(db, "allowed_to_register_list", emailParam);
+        try {
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            // Document exists, you can access its data
+            const data = docSnap.data();
+            const head_quarter = data.head_quarter;
+            const profile = data.profile;
+            const role = data.role;
+
+            submitNewUser (email, head_quarter, profile, role)
+
+            console.log(`Data list: ${head_quarter}, ${profile}, ${role}`);
+          } else {
+            window.location.href = "login.html";
+          }
+        } catch (e) {
+          console.error("Error getting document:", e);
+        }
+      }
+
+      function addAuthentication (email, password, f_name, m_name, l_name, head_quarter, profile, role)
+      {
+        createUserWithEmailAndPassword(check, email, password)
+            .then((userCredential) => {
+              // User created successfully
+              const user = userCredential.user;
+              console.log("User UID:", user.uid);
+
+              addNewUser (head_quarter, profile, role, user.uid, f_name, m_name, l_name)
+            })
+            .catch((error) => {
+              // Handle errors
+              const errorCode = error.code;
+              const errorMessage = error.message;
+
+              if (errorCode === 'auth/email-already-in-use') {
+                // The email address is already in use by another account.
+                console.error("Email already in use:", errorMessage);
+                toastMixin.fire({
+                animation: true,
+                title: `Email already in use: ${errorMessage}`,
+                timer: 3000,
+                icon: 'error'
+                });
+              } else {
+                console.error("Error creating user:", errorMessage);
+                toastMixin.fire({
+                animation: true,
+                title: `Error creating user: ${errorMessage}`,
+                timer: 3000,
+                icon: 'error'
+                });
+              }
+            });
+      }
+    
+      async function addNewUser (head_quarter, profile, role, user_id, f_name, m_name, l_name)
+      {
+        try {
+            // Reference to the collection
+            const allowedToRegisterCollection = collection(db, 'accounts');
+
+            // Document ID and data to be added
+            const documentId = user_id;
+            const documentData = {
+              first_name: f_name,
+              middle_name: m_name,
+              last_name: l_name,
+              head_quarter: head_quarter,
+              profile: profile,
+              role: role
+            };
+
+            // Check if the document with the given ID already exists
+            const documentRef = doc(allowedToRegisterCollection, documentId);
+            const docSnapshot = await getDoc(documentRef);
+
+            // If the document doesn't exist, add it
+            if (!docSnapshot.exists()) {
+              await setDoc(documentRef, documentData);
+              console.log(`Document added successfully: ${documentId}`);
+              window.location.href = "index.html";
+            } else {
+              toastMixin.fire({
+                animation: true,
+                title: `Document with ID ${documentId} already exists. Not adding.`,
+                timer: 3000,
+                icon: 'error'
+                });
+              console.log(`Document with ID ${documentId} already exists. Not adding.`);
+            }
+          } catch (error) {
+            toastMixin.fire({
+                animation: true,
+                title: `Error adding document to allowed list:', ${error}`,
+                timer: 3000,
+                icon: 'error'
+                });
+            console.error('Error adding document to allowed list:', error);
+          }
+      }
+    
     </script>
   </body>
 </html>
